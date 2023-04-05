@@ -1,0 +1,281 @@
+
+<title>Swarmvtab Virtual Table</title>
+
+<table_of_contents>
+
+<h1 tags="swarmvtab">Overview</h1>
+
+<p>The "swarmvtab" virtual table allows the user to query a large number 
+of tables (hereafter "component" tables) with similar schemas but distinct
+ranges of rowid values as if they were a single database table. The tables may
+be (and usually are) located in different databases. Swarmvtab tables are
+read-only.
+
+<p>Component tables must not be declared WITHOUT ROWID, and must all have
+the same schema, but may have different names within their databases. In
+this context, "the same schema" means that:
+
+<ul>
+  <li>All component tables must have the same set of columns, in the same 
+      order.
+  <li>The types and default collation sequences attached to each column
+      must be the same for all component tables.
+  <li>All component tables must have the same PRIMARY KEY declaration (if any).
+</ul>
+
+<p>A swarmvtab table has the same schema as each of its component tables.
+
+<p>A swarmvtab virtual table is created as follows:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.&lt;name&gt; USING swarmvtab(&lt;sql-statement&gt;);
+</codeblock>
+
+<p>Swarmvtab virtual tables must be created in the temp schema. Attempting
+to create a swarmvtab in the main or an attached database is an error.
+
+<p>The SQL statement supplied as the argument to the CREATE VIRTUAL TABLE
+statement is executed when the table is created. It must return either four
+or five columns. Each row returned describes one of the component tables. The
+first four columns are interpreted, from first to last, as:
+
+<ul>
+  <li> <b>Database URI</b>. A filename or URI that can be used to open the
+  database containing the component table.
+
+  <li> <b>Table name</b>. The name of the component table within its database.
+
+  <li> <b>Minimum rowid</b>. The smallest rowid value that the component
+  table may contain.
+
+  <li> <b>Maximum rowid</b>. The smallest rowid value that the component
+  table may contain.
+</ul>
+
+<p>The interpretation of the final column, if it is present, is 
+[swarmvtab context|described here].
+
+<p>For example, say the SQL statement returns the following data when 
+executed:
+
+<table striped=1>
+<tr><th>Database URI<th>Table name<th>Minimum rowid<th>Maximum rowid
+<tr><td>test.db1 <td>t1 <td>0 <td>10
+<tr><td>test.db2 <td>t2 <td>11 <td>20
+<tr><td>test.db3 <td>t1 <td>21 <td>30
+<tr><td>test.db4 <td>t1 <td>31 <td>40
+</table>
+
+<p>and the user queries the swarmvtab table for the row with rowid value
+25. The swarmvtab table will open database file "test.db3" and read the
+data to return from table "t1" (as 25 falls within the range of rowids
+assigned to table "t1" in "test.db3").
+
+<p>Swarmvtab efficiently handles range and equality constraints on the
+rowid (or other INTEGER PRIMARY KEY) field only. If a query does not 
+contain such a constraint, then swarmvtab finds the results by opening
+each database in turn and linearly scanning the component table. Which 
+generates a correct result, but is often slow.
+
+<p>There must be no overlapping rowid ranges in the rows returned by
+the SQL statement. It is an error if there are.
+
+<p>The swarmvtab implementation may open or close databases at any 
+point. By default, it attempts to limit the maximum number of 
+simultaneously open database files to nine. This is not a hard limit -
+it is possible to construct a scenario that will cause swarmvtab to 
+exceed it.
+
+<h1 tags="compilation">Compiling and Using Swarmvtab</h1>
+
+<p>The code for the swarmvtab virtual table is found in the
+ext/misc/unionvtab.c file of the main SQLite source tree. It may be compiled
+into an SQLite [loadable extension] using a command like:
+
+<codeblock>
+    gcc -g -fPIC -shared unionvtab.c -o unionvtab.so
+</codeblock>
+
+<p>Alternatively, the unionvtab.c file may be compiled into the application. 
+In this case, the following function should be invoked to register the
+extension with each new database connection:
+
+<codeblock>
+  int sqlite3_unionvtab_init(sqlite3 *db, void*, void*);
+</codeblock>
+
+<p> The first argument passed should be the database handle to register the
+extension with. The second and third arguments should both be passed 0.
+
+<p> The source file and entry point are named for "unionvtab" instead of
+"swarmvtab". Unionvtab is a [unionvtab|separately documented] virtual table 
+that is bundled with swarmvtab.
+
+<h1 tags="advanced">Advanced Usage</h1>
+
+<p>Most users of swarmvtab will only use the features described above. 
+This section describes features designed for more esoteric use cases. These
+features all involve specifying extra optional parameters following the SQL
+statement as part of the CREATE VIRTUAL TABLE command. An optional parameter 
+is specified using its name, followed by an "=" character, followed by an
+optionally quoted value. Whitespace may separate the name, "=" character 
+and value. For example:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.sv USING swarmvtab (
+    'SELECT ...',                <i>-- the SELECT statement</i>
+    maxopen = 20,                <i>-- An optional parameter</i>
+    missing='missing_udf'        <i>-- Another optional parameter</i>
+  );
+</codeblock>
+
+<p>The following sections describe the supported parameters. Specifying
+an unrecognized parameter name is an error.
+
+<h2 tags="sql parameters">SQL Parameters</h2>
+
+<p>If a parameter name begins with a ":", then it is assumed to be a
+value to bind to the SQL statement before executing it. The value is always
+bound as text. It is an error if the specified SQL parameter does not
+exist. For example:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.x1 USING swarmvtab (
+    "SELECT :dir || local_filename, tbl, min, max FROM components",
+    :dir = '/home/user/app/databases/'
+  );
+</codeblock>
+
+<p>When the above CREATE VIRTUAL TABLE statement is executed, swarmvtab binds
+the text value "/home/user/app/databases/" to the :dir parameter of the
+SQL statement before executing it.
+
+<p>A single CREATE VIRTUAL TABLE statement may contain any number of SQL
+parameters.
+
+<h2 tags="maxopen parameter">The "maxopen" Parameter</h2>
+
+<p>By default, swarmvtab attempts to limit the number of simultaneously
+open databases to nine. This parameter allows that limit to be changed.
+For example, to create a swarmvtab table that may hold up to 30 databases
+open simultaneously:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.x1 USING swarmvtab (
+    "SELECT ...",
+    maxopen=30
+  );
+</codeblock>
+
+<p>Raising the number of open databases may improve performance in some
+scenarios.
+
+<h2 tags="openclose callback">The "openclose" Callback</h2>
+
+<p>The "openclose" parameter allows the user to specify the name of a
+[application-defined SQL function] that will be invoked just before
+swarmvtab opens a database, and again just after it closes one. The first
+argument passed to the open close function is the filename or URI
+identifying the database to be opened or just recently closed (the same
+value returned in the leftmost column of the SQL statement provided to
+the CREATE VIRTUAL TABLE command). The second argument is integer value
+0 when the function is invoked before opening a database, and 1 when it
+is invoked after one is closed. For example, if:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.x1 USING swarmvtab (
+    "SELECT ...",
+    openclose = 'openclose_udf'
+  );
+</codeblock>
+
+<p>then before each database containing a component table is opened, 
+swarmvtab effectively executes:
+
+<codeblock>
+  SELECT openclose_udf(&lt;database-name&gt;, 0);
+</codeblock>
+
+<p>After a database is closed, swarmvtab runs the equivalent of:
+
+<codeblock>
+  SELECT openclose_udf(&lt;database-name&gt;, 1);
+</codeblock>
+
+<p>Any value returned by the openclose function is ignored. If an invocation
+made before opening a database returns an error, then the database file is
+not opened and the error returned to the user. This is the only scenario
+in which swarmvtab will issue an "open" invocation without also eventually
+issuing a corresponding "close" call. If there are still databases open,
+"close" calls may be issued from within the eventual sqlite3_close() call
+on the applications database that deletes the temp schema in which the
+swarmvtab table resides.
+
+<p>Errors returned by "close" invocations are always ignored.
+
+<h2 tags="missing callback">The "missing" Callback</h2>
+
+<p>The "missing" parameter allows the user to specify the name of a
+[application-defined SQL function] that will be invoked just before
+swarmvtab opens a database if it finds that the required database file
+is not present on disk. This provides the application with an opportunity
+to retrieve the required database from a remote source before swarmvtab
+attempts to open it. The only argument passed to the "missing" function
+is the name or URI that identifies the database being opened. Assuming:
+
+<codeblock>
+  CREATE VIRTUAL TABLE temp.x1 USING swarmvtab (
+    "SELECT ...",
+    openclose = 'openclose_udf',
+    missing='missing_udf'
+  );
+</codeblock>
+
+<p>then the missing function is invoked as follows:
+
+<codeblock>
+  SELECT missing_udf(&lt;database-name&gt;);
+</codeblock>
+
+<p>If the missing function returns an error, then the database is not 
+opened and the error returned to the user. If an openclose function is
+configured, then a "close" invocation is issued at this point to match
+the earlier "open". The following pseudo-code illustrates the procedure used
+by a swarmvtab instance with both missing and openclose functions configured
+when a component database is opened.
+
+<codeblock>
+  SELECT openclose_udf(&lt;database-name&gt;, 0);
+  if( error ) return error;
+  if( db does not exist ){
+    SELECT missing_udf(&lt;database-name&gt;);
+    if( error ){
+      SELECT openclose_udf(&lt;database-name&gt;, 1);
+      return error;
+    }
+  }
+  sqlite3_open_v2(&lt;database-name&gt;);
+  if( error ){
+    SELECT openclose_udf(&lt;database-name&gt;, 1);
+    return error;
+  }
+  // db successfully opened!
+</codeblock>
+
+<h2 tags="swarmvtab context">Component table "context" values</h2>
+
+<p> If the SELECT statement specified as part of the CREATE VIRTUAL 
+TABLE command returns five columns, then the final column is used
+for application context only. Swarmvtab does not use this value at
+all, except that it is passed after &lt;database-name&gt; to both
+the openclose and missing functions, if specified. In other words,
+instead of invoking the functions as described above, if the "context"
+column is present swarmvtab instead invokes:
+
+<codeblock>
+  SELECT missing_udf(&lt;database-name&gt;, &lt;context&gt;);
+  SELECT openclose_udf(&lt;database-name&gt;, &lt;context&gt;, 0);
+  SELECT openclose_udf(&lt;database-name&gt;, &lt;context&gt;, 1);
+</codeblock>
+
+<p>as required.

@@ -1,0 +1,41 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+     arrow right linerad then down $h then right 2*arrowht
+     oval "ON" fit
+     arrow 2*arrowht
+CON: oval "CONFLICT" fit
+     arrow
+RB:  oval "ROLLBACK" fit
+AB:  oval "ABORT" fit with .w at 1.25*$h below RB.w
+FL:  oval "FAIL" fit with .w at 1.25*$h below AB.w
+IG:  oval "IGNORE" fit with .w at 1.25*$h below FL.w
+RE:  oval "REPLACE" fit with .w at 1.25*$h below IG.w
+     arrow from RB.e right 2*arrowht
+X1:  previous.end
+X0:  linerad right of CON.e
+
+     # exit from ROLLBACK up and then to end circle
+     arrow from X1 right linerad then up even with last circle \
+       then right 2*arrowht
+     circle same
+
+     # top bypass
+     arrow from first circle.e to .5<first circle,last circle>
+     line to arrowht left of last circle
+
+     # linkage to REPLACE
+     arrow from CON.e right linerad then down even with RE then to RE.w
+     arrow from RE.e right even with X1
+     line right linerad then up even with RB.n
+
+     # linkage to all other options
+     arrow from (X0,AB.n) down even with AB then to AB.w
+     arrow from AB.e right even with X1; line right linerad then up linerad
+     arrow from (X0,FL.n) down even with FL then to FL.w
+     arrow from FL.e right even with X1; line right linerad then up linerad
+     arrow from (X0,IG.n) down even with IG then to IG.w
+     arrow from IG.e right even with X1; line right linerad then up linerad

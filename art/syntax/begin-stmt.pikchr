@@ -1,0 +1,40 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+     arrow 2*arrowht
+BG:  oval "BEGIN" fit
+A0:  arrow 2*arrowht
+
+     # EXCLUSIVE branch
+     arrow from A0.end right linerad then down 3.5*BG.ht then right 2*arrowht
+     oval "EXCLUSIVE" fit
+     arrow 2*arrowht
+DN:  A0.end + (linerad, -linerad)
+UP:  linerad right of previous.end
+     arrow right even with UP then up even with BG then right 2*arrowht
+A1:  arrow
+TXN: oval "TRANSACTION" fit
+A2:  arrow
+     circle same
+
+     # TRANSACTION bypass
+     arrow from A1.start right linerad then down 1.0*BG.ht \
+        then right even with TXN
+     line right even with .3<A2.start,A2.end> then up even with A2 \
+        then right linerad
+
+     # DEFERRED bypass
+     line from A0.end to arrowht left of A1.start
+
+     # DEFERRED branch
+     arrow from DN down even with 1.0*BG.ht below BG then right 2*arrowht
+     oval "DEFERRED" fit
+     arrow 2*arrowht
+     line right even with UP then up linerad
+
+     # IMMEDIATE branch
+     arrow from DN down even with 2.25*BG.ht below BG then right 2*arrowht
+     oval "IMMEDIATE" fit
+     arrow 2*arrowht
+     line right even with UP then up linerad

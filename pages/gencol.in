@@ -1,0 +1,162 @@
+<title>Generated Columns</title>
+<tcl>
+hd_keywords {generated columns} {computed columns} {generated column} \
+  {Generated columns}
+</tcl>
+<table_of_contents>
+
+<h1>Introduction</h1>
+
+<p>Generated columns (also sometimes called "computed columns")
+are columns of a table whose values are a function of other columns
+in the same row.
+Generated columns can be read, but their values can not be directly
+written.  The only way to change the value of a generated column is to
+modify the values of the other columns used to calculate
+the generated column.
+
+<h1>Syntax</h1>
+
+<p>Syntactically, generated columns are designated using a
+"GENERATED ALWAYS" [column-constraint].  For example:
+
+<codeblock>
+CREATE TABLE t1(
+   a INTEGER PRIMARY KEY,
+   b INT,
+   c TEXT,
+   d INT GENERATED ALWAYS AS (a*abs(b)) VIRTUAL,
+   e TEXT GENERATED ALWAYS AS (substr(c,b,b+1)) STORED
+);
+</codeblock>
+
+<p>The statement above has three ordinary columns, "a" (the PRIMARY KEY),
+"b", and "c", and two generated columns "d" and "e".
+
+<p>The "GENERATED ALWAYS" keywords at the beginning of the constraint
+and the "VIRTUAL" or "STORED" keyword at the end are all optional.
+Only the "AS" keyword and the parenthesized expression are required.
+If the trailing "VIRTUAL" or "STORED" keyword is omitted, then
+VIRTUAL is the default.  Hence, the example statement above could
+be simplified to just:
+
+<codeblock>
+CREATE TABLE t1(
+   a INTEGER PRIMARY KEY,
+   b INT,
+   c TEXT,
+   d INT AS (a*abs(b)),
+   e TEXT AS (substr(c,b,b+1)) STORED
+);
+</codeblock>
+
+<h2>VIRTUAL versus STORED columns</h2>
+
+<p>Generated columns can be either VIRTUAL or STORED.  The value of
+a VIRTUAL column is computed when read, whereas the value of a STORED
+column is computed when the row is written.  STORED columns take up space
+in the database file, whereas VIRTUAL columns use more CPU cycles when
+being read.
+
+<p>From the point of view of SQL, STORED and VIRTUAL columns are almost
+exactly the same.  Queries against either class of generated column
+produce the same results.  The only functional difference is that
+one cannot add new STORED columns using the
+[ALTER TABLE ADD COLUMN] command.  Only VIRTUAL columns can be added
+using ALTER TABLE.
+
+<h2>Capabilities</h2>
+
+<ol>
+<li><p>
+^Generated columns can have a datatype.  ^SQLite attempts to transform
+the result of the generating expression into that datatype using the
+same [affinity] rules as for ordinary columns.
+
+<li><p>
+^Generated columns may have NOT NULL, CHECK, and UNIQUE constraints,
+and foreign key constraints, just like ordinary columns.
+
+<li><p>
+^Generated columns can participate in indexes, just like ordinary
+columns.
+
+<li><p>
+^The expression of a generated column can refer to any of the
+other declared columns in the table, including other generated columns,
+as long as the expression does not directly or indirectly refer back
+to itself.
+
+<li><p>
+^Generated columns can occur anywhere in the table definition.  ^Generated
+columns can be interspersed among ordinary columns.  ^It is not necessary
+to put generated columns at the end of the list of columns in the
+table definition, as is shown in the examples above.
+</ol>
+
+
+<h2>Limitations</h2>
+
+<ol>
+<li><p>
+^Generated columns may not have a [default value] (they may not use the
+"DEFAULT" clause).  The value of a generated column is always the value
+specified by the expression that follows the "AS" keyword.
+
+<li><p>
+^Generated columns may not be used as part of the [PRIMARY KEY].
+(Future versions of SQLite might relax this constraint for STORED columns.)
+
+<li><p>
+^The expression of a generated column may only reference
+constant literals and columns within the same row, and may only use
+scalar [deterministic functions].  ^The expression may not use subqueries,
+aggregate functions, window functions, or table-valued functions.
+
+<li><p>
+^The expression of a generated column may refer to other generated columns
+in the same row, but no generated column can depend upon itself, either
+directly or indirectly.  
+
+<li><p>^The expression of a generated column may not directly reference
+the [ROWID], though it can reference the [INTEGER PRIMARY KEY] column,
+which is often the same thing.
+
+<li><p>
+^Every table must have at least one non-generated column.
+
+<li><p>
+^It is not possible to [ALTER TABLE ADD COLUMN] a STORED column.
+^One can add a VIRTUAL column, however.
+
+<li><p>
+The datatype and [collating sequence] of the generated column are determined
+only by the datatype and [COLLATE clause] on the column definition.
+The datatype and collating sequence of the GENERATED ALWAYS AS expression
+have no affect on the datatype and collating sequence of the column itself.
+
+<li><p>
+Generated columns are not included in the list of columns provided by
+the [PRAGMA table_info] statement.  But they are included in the output of
+the newer [PRAGMA table_xinfo] statement.
+</ol>
+
+<h1>Compatibility</h1>
+
+<p>Generated column support was added with SQLite version 3.31.0
+([dateof:3.31.0]).  If an earlier version of SQLite attempts to read
+a database file that contains a generated column in its schema, then
+that earlier version will perceive the generated column syntax as an
+error and will report that the database schema is corrupt.
+
+<p>To clarify:  SQLite version 3.31.0 can read and write any database
+created by any prior version of SQLite going back to 
+SQLite 3.0.0 ([dateof:3.0.0]).  And, earlier versions of SQLite,
+prior to 3.31.0, can read and write databases created by SQLite
+version 3.31.0 and later as long
+as the database schema does not contain features, such as
+generated columns, that are not understood by the earlier version.
+Problems only arise if you create a new database that contains
+generated columns, using SQLite version 3.31.0 or later, and then
+try to read or write that database file using an earlier version of
+SQLite that does not understand generated columns.

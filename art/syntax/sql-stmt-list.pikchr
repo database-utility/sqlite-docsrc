@@ -1,0 +1,24 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     line
+X1:  last.end
+     arrow
+ST:  box "sql-stmt" fit
+     line
+X2:  last.end
+     arrow
+     circle same
+
+     arrow from X1 right linerad then down .9*$h \
+         then right even with ST
+     line right even with linerad+arrowht west of X2 then up even with X2 \
+         then right linerad
+
+SM:  oval ";" bold fit at 1.25*$h above ST
+     arrow from X2 right linerad then up even with SM then to SM.e
+     line from SM.w left even with linerad+arrowht west of X1 \
+         then down even with X1 then right linerad

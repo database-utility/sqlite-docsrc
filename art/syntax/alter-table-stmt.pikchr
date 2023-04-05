@@ -1,0 +1,82 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+     circle radius 10%
+     arrow 5mm
+     line 60%
+     oval "ALTER" fit
+     arrow
+     oval "TABLE" fit
+ A1: arrow 3mm
+     arrow
+ SN: oval "schema-name" fit
+     arrow 4mm
+     oval "." fit
+ A2: arrow
+ TN: oval "table-name" fit
+     arrow from A1.end right 3mm then up 1.3*charht \
+         then right until even with .7<SN.w,SN.e>
+     line right until even with .5<A2.w,A2> then down until even with A2 \
+          then to A2.end
+     
+     arrow from TN.e right 50% then down TN.ht*.8
+     arrow down TN.ht*.8 then left until even with SN
+ A3: line left until even with first circle then down .5*TN.ht
+     
+     arrow down TN.ht then right
+RN1: oval "RENAME" fit
+     arrow right 50%
+     oval "TO" fit
+     arrow right 50%
+NTN: oval "new-table-name" fit
+     
+ A4: arrow from A3.end down TN.ht*2.5 \
+         then right until even with RN1.w
+RN2: oval "RENAME" fit
+ A5: arrow 3mm; arrow
+CM5: oval "COLUMN" fit
+ A6: arrow
+     oval "column-name" fit
+     arrow 50%
+     oval "TO" fit
+     arrow 50%
+NCN: oval "new-column-name" fit
+ A9: arrow 3mm; arrow right 3mm then up until even with NTN then right
+     circle rad 10%
+     arrow from NTN.e to previous circle.w
+     arrow from end of A5 right 3mm then down 1.3*charht \
+        then right until even with CM5
+     arrow right until even with .5<A6.w,A6> then up until even with A6 \
+        then to end of A6
+
+     # dot at A3.end color blue     
+     arrow from A3.end down TN.ht*4.5 \
+        then right until even with RN1.w
+     oval "ADD" fit
+ A7: arrow 3mm; arrow
+CM7: oval "COLUMN" fit
+ A8: arrow
+     box "column-def" fit
+A10: arrow right until even with end of A9
+     arrow from end of A7 right 3mm then down 1.3*charht \
+        then right until even with CM7
+     arrow right until even with .5<A8.w,A8> then up until even with A8 \
+        then to end of A8
+     arrow from end of A10 right 3mm then up until even with NTN then right
+
+
+     arrow from (A3.end.x,ADD.n.y) then down even with 1.85*$h below ADD.w \
+        then right even with ADD.w
+     oval "DROP" fit
+A11: arrow 3mm; arrow;
+CM8: oval "COLUMN" fit
+     arrow
+     oval "column-name" fit
+     arrow right until even with end of A9
+     line right 3mm then up until even with ADD.n
+     arrow from A11.end right linerad then down 1.3*charht \
+       then right even with CM8
+     line right even with arrowht east of CM8.e \
+       then up even with CM8 then right linerad

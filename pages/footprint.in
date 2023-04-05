@@ -1,0 +1,101 @@
+<title>SQLite Library Footprint</title>
+<tcl>hd_keywords footprint {library size} {relfootprint}</tcl>
+
+
+<h1 align="center">Size Of The SQLite Library</h1>
+
+<p>
+The code space used by the SQLite library depends on the target
+platform, the compiler, and optimization settings.  These variables
+also affect performance.
+</p>
+
+<p>
+The chart below shows the relative size and performance for SQLite
+as of 2017-10-08 for various compilers and optimization settings
+as tested on Ubuntu 16.04.3 on x86_64.  General observations:
+
+<ol>
+<li><p>
+The Clang/LLVM compiler is not competitive with GCC.  Clang-generated
+binaries are consistently larger and slower than GCC-generated binaries.
+
+<li><p>
+Profile guided optimization (PGO) is not helpful with SQLite.  PGO results
+in binaries that are about 1% larger and about 0.33% slower.
+
+<li><p>
+GCC-7 generates binaries that are smaller and faster than GCC-5, though
+the difference is not that great.
+
+<li><p>
+Compiling with GCC and -Os results in a binary that is slightly less 
+than 500KB in size. (Update 2018-07-07: Due to the addition of new
+features such as [UPSERT] and [window functions], the library footprint
+is now slightly larger than 500KB.)
+
+<li><p>
+The only significant design decision that developers need to make is
+whether to use -Os (optimize for size) or -O6 (optimize for speed).
+The -O6 setting makes binaries that run about 2% or 3% faster, but which
+are also 66% larger.  The performance here is measured by counting CPU
+cycles using cachegrind.  I-cache misses are not considered in the
+analysis.  If I-cache misses are considered, builds with -O6 might not
+be any faster than builds with -Os.
+
+<li><p>
+Taking into consideration all of the above, the SQLite developers recommend
+compiling SQLite using GCC-7 with the -Os optimization setting.
+</ol>
+
+<hr>
+<center>
+<img src='images/cc-diff.jpg'>
+</center>
+</hr>
+
+<h1>Details</h1>
+
+<ul>
+<li><p>
+Measurements above were conducted using SQLite version 
+[https://sqlite.org/src/timeline?c=5594a121bf132a98|5594a121bf132a98] from
+2017-10-08.
+
+<li><p>
+The only SQLite compile-time option used was [-DSQLITE_ENABLE_MEMSYS5].
+The optional [memsys5] memory allocator is used for performance testing
+because it gives results that are more repeatable than the library-supplied
+malloc()/free() on Ubuntu.
+
+<li><p>
+Performance can be improved and the size reduced by
+enabling [-DSQLITE_THREADSAFE=0],
+[-DSQLITE_DEFAULT_MEMSTATUS=0],
+[-DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1],
+[-DSQLITE_LIKE_DOESNT_MATCH_BLOBS],
+[SQLITE_MAX_EXPR_DEPTH|-DSQLITE_MAX_EXPR_DEPTH=0],
+[-DSQLITE_OMIT_DECLTYPE],
+[-DSQLITE_OMIT_DEPRECATED],
+[-DSQLITE_OMIT_PROGRESS_CALLBACK],
+[-DSQLITE_OMIT_SHARED_CACHE], and
+[-DSQLITE_USE_ALLOCA].
+All these options together result in about a 3.5% performance increase and
+a 3.0% size reduction.
+
+<li><p>
+Adding optional features like [-DSQLITE_ENABLE_JSON1],
+[-DSQLITE_ENABLE_FTS5], or [-DSQLITE_ENABLE_RTREE] will increase the
+size of the library, obviously.
+
+<li><p>
+Performance was measured using the
+[https://sqlite.org/src/file/test/speedtest1.c|speedtest1.c] utility program,
+which attempts to mimic a typical workload for SQLite.  Options to
+the test runs are:
+<blockquote>
+<tt>--shrink-memory --reprepare --stats --heap 10000000 64 --size 5</tt>
+</blockquote>
+Performance was measured by running speedtest1 using cachegrind and
+observing the "I refs" output.
+</ul>

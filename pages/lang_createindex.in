@@ -1,0 +1,92 @@
+<title>CREATE INDEX</title>
+<tcl>
+hd_keywords *createindex {CREATE INDEX} {Indexes}
+</tcl>
+
+<fancy_format>
+<h1>Syntax</h1>
+<tcl>
+RecursiveBubbleDiagram create-index-stmt
+</tcl>
+
+<p>^The CREATE INDEX command consists of the keywords "CREATE INDEX" followed
+by the name of the new index, the keyword "ON", the name of a previously
+created table that is to be indexed, and a parenthesized list of table column
+names and/or expressions that are used for the index key.
+If the optional WHERE clause is included, then the index is a "[partial index]".
+</p>
+
+<p>^If the optional IF NOT EXISTS clause is present and another index
+with the same name already exists, then this command becomes a no-op.</p>
+
+<p>There are no arbitrary limits on the number of indices that can be
+attached to a single table.  ^(The number of columns in an index is 
+limited to the value set by
+[sqlite3_limit]([SQLITE_LIMIT_COLUMN],...).)^</p>
+
+<p>^Indexes are removed with the [DROP INDEX] command.</p>
+
+<tcl>hd_fragment uniqueidx {unique index}</tcl>
+<h2>Unique Indexes</h2>
+
+<p>^If the UNIQUE keyword appears between CREATE and INDEX then duplicate
+index entries are not allowed.  ^Any attempt to insert a duplicate entry
+will result in an error.</p>
+
+<p>^For the purposes of unique indices, all NULL values
+are considered different from all other NULL values and are thus unique.
+This is one of the two possible interpretations of the SQL-92 standard
+(the language in the standard is ambiguous).  The interpretation used
+by SQLite is the same and is the interpretation
+followed by PostgreSQL, MySQL, Firebird, and Oracle.  Informix and
+Microsoft SQL Server follow the other interpretation of the standard, which
+is that all NULL values are equal to one another.</p>
+
+<tcl>hd_fragment indexexpr</tcl>
+<h2>Indexes on Expressions</h2>
+
+<p>^Expressions in an index may not reference other tables
+and may not use subqueries nor functions whose result might
+change (ex: [random()] or [sqlite_version()]).
+^Expressions in an index may only refer to columns in the table
+that is being indexed.
+Indexes on expression will not work with versions of SQLite prior
+to [version 3.9.0] ([dateof:3.9.0]).
+See the [Indexes On Expressions] document for additional information
+about using general expressions in CREATE INDEX statements.
+
+<tcl>hd_fragment {descidx} {descending indices} {descending index} \
+    {descending indexes} {DESC}</tcl>
+<h2>Descending Indexes</h2>
+
+<p>^Each column name or expression can be followed by one
+of the "ASC" or "DESC" keywords to indicate sort order.
+^The sort order may or may not be ignored depending
+on the database file format, and in particular the [schema format number].
+^The "legacy" schema format (1) ignores index
+sort order.  ^The descending index schema format (4) takes index sort order
+into account.  Only versions of SQLite 3.3.0 ([dateof:3.3.0])
+and later are able to understand
+the descending index format. For compatibility, version of SQLite between 3.3.0
+and 3.7.9 use the legacy schema format by default.  The newer schema format is
+used by default in version 3.7.10 ([dateof:3.7.10]) and later.
+^The [legacy_file_format pragma] can be used to change set the specific
+behavior for any version of SQLite.</p>
+
+<h2>NULLS FIRST and NULLS LAST</h2>
+
+<p>The NULLS FIRST and NULLS LAST predicates are not supported
+for indexes.  For [sort order|sorting purposes], SQLite considers NULL values 
+to be smaller than all other values.  Hence NULL values always appear at
+the beginning of an ASC index and at the end of a DESC index.</p>
+
+<tcl>hd_fragment collidx {COLLATE}</tcl>
+<h2>Collations</h2>
+
+<p>^The COLLATE clause optionally following each column name
+or expression defines a
+collating sequence used for text entries in that column.
+^The default collating
+sequence is the collating sequence defined for that column in the
+[CREATE TABLE] statement.  ^Or if no collating sequence is otherwise defined,
+the built-in BINARY collating sequence is used.</p>

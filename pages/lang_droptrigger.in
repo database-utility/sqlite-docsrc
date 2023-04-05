@@ -1,0 +1,16 @@
+<title>DROP TRIGGER</title>
+<tcl>
+hd_keywords *droptrigger {DROP TRIGGER}
+</tcl>
+
+<tcl>
+RecursiveBubbleDiagram drop-trigger-stmt
+</tcl>
+
+<p>^The DROP TRIGGER statement removes a trigger created by the 
+[CREATE TRIGGER] statement. ^Once removed, the trigger definition is no
+longer present in the [sqlite_schema] (or sqlite_temp_schema) table and is
+not fired by any subsequent INSERT, UPDATE or DELETE statements.
+
+<p>^Note that triggers are automatically dropped when the associated table is
+dropped.

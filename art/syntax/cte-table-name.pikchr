@@ -1,0 +1,26 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+TN:  oval "table-name" fit
+     arrow
+LP:  oval "(" bold fit
+     arrow
+CN:  oval "column-name" fit
+     arrow
+RP:  oval ")" bold fit
+     arrow
+     circle same
+
+     # column name loop
+CMA: oval "," bold fit at 1.25*$h below CN
+     arrow from CN.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht left of CN.w \
+        then up even with CN then right linerad
+
+     # argument list bypass
+     arrow from TN.e right linerad then up $h then right even with CN
+     line right even with 2.5*arrowht west of last circle.w \
+        then down even with last circle then right linerad

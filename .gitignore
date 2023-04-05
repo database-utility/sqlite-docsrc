@@ -1,0 +1,3 @@
+/doc/**/*.html
+/dbu/build
+.DS_Store

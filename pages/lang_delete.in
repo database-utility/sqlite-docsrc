@@ -1,0 +1,113 @@
+<title>DELETE</title>
+<tcl>
+hd_keywords *delete DELETE DELETEs
+</tcl>
+
+<table_of_contents>
+<h1>Overview</h1>
+
+<tcl>
+RecursiveBubbleDiagram delete-stmt
+</tcl>
+
+<p>The DELETE command removes records from the table identified by the
+   [qualified-table-name].
+
+<p>^If the WHERE clause is not present, all records in the table are deleted.
+   ^If a WHERE clause is supplied, then only those rows for which the
+   WHERE clause [boolean expression] is true are deleted.
+   ^Rows for which the expression is false or NULL are retained.
+
+<p>^
+
+<h1>Restrictions on DELETE Statements Within CREATE TRIGGER</h1>
+
+<p>The following restrictions apply to DELETE statements that occur within the
+   body of a [CREATE TRIGGER] statement:
+
+<ul>
+  <li><p>^The <yyterm>table-name</yyterm> specified as part of a 
+    DELETE statement within
+    a trigger body must be unqualified.  ^(In other words, the
+    <i>schema-name</i><b>.</b> prefix on the table name is not allowed 
+    within triggers.)^ ^If the table to which the trigger is attached is
+    not in the temp database, then DELETE statements within the trigger
+    body must operate on tables within the same database as it. ^If the table
+    to which the trigger is attached is in the TEMP database, then the
+    unqualified name of the table being deleted is resolved in the same way as
+    it is for a top-level statement (by searching first the TEMP database, then
+    the main database, then any other databases in the order they were
+    attached).
+    
+  <li><p>^The INDEXED BY and NOT INDEXED clauses are not allowed on DELETE
+    statements within triggers.</p>
+
+  <li><p>^The LIMIT and ORDER BY clauses (described below) are unsupported for
+    DELETE statements within triggers.</p>
+
+  <li><p>^The RETURNING clause is not supported for triggers.
+</ul>
+
+<h1>Optional LIMIT and ORDER BY clauses</h1>
+
+<p>^(If SQLite is compiled with the [SQLITE_ENABLE_UPDATE_DELETE_LIMIT]
+compile-time option, then the syntax of the DELETE statement is
+extended by the addition of optional ORDER BY and LIMIT clauses:)^</p>
+
+<tcl>BubbleDiagram delete-stmt-limited</tcl>
+
+<p>^If a DELETE statement has a LIMIT clause, the maximum number of rows that
+will be deleted is found by evaluating the accompanying expression and casting
+it to an integer value. ^If the result of the evaluating the LIMIT clause
+cannot be losslessly converted to an integer value, it is an error. ^A 
+negative LIMIT value is interpreted as "no limit". ^(If the DELETE statement 
+also has an OFFSET clause, then it is similarly evaluated and cast to an
+integer value. Again, it is an error if the value cannot be losslessly
+converted to an integer.)^ ^If there is no OFFSET clause, or the calculated
+integer value is negative, the effective OFFSET value is zero.
+
+<p>^(If the DELETE statement has an ORDER BY clause, then all rows that would 
+be deleted in the absence of the LIMIT clause are sorted according to the 
+ORDER BY. The first <i>M</i> rows, where <i>M</i> is the value found by
+evaluating the OFFSET clause expression, are skipped, and the following 
+<i>N</i>, where <i>N</i> is the value of the LIMIT expression, are deleted.)^
+^If there are less than <i>N</i> rows remaining after taking the OFFSET clause
+into account, or if the LIMIT clause evaluated to a negative value, then all
+remaining rows are deleted.
+
+<p>^If the DELETE statement has no ORDER BY clause, then all rows that
+would be deleted in the absence of the LIMIT clause are assembled in an
+arbitrary order before applying the LIMIT and OFFSET clauses to determine 
+the subset that are actually deleted.
+
+<p>^(The ORDER BY clause on a DELETE statement is used only to determine which
+rows fall within the LIMIT. The order in which rows are deleted is arbitrary
+and is not influenced by the ORDER BY clause.)^
+^This means that if there is a [RETURNING clause], the rows returned by
+the statement probably will not be in the order specified by the
+ORDER BY clause.
+
+<tcl>hd_fragment truncateopt {truncate optimization}</tcl>
+<h1>The Truncate Optimization</h1>
+
+<p>^When the WHERE clause and RETURNING clause are both  omitted
+from a DELETE statement and the table being deleted has no triggers,
+SQLite uses an optimization to erase the entire table content
+without having to visit each row of the table individually.
+This "truncate" optimization makes the delete run much faster.
+Prior to SQLite [version 3.6.5] ([dateof:3.6.5]), the truncate optimization
+also meant that the [sqlite3_changes()] and
+[sqlite3_total_changes()] interfaces
+and the [count_changes pragma]
+will not actually return the number of deleted rows.  
+That problem has been fixed as of [version 3.6.5] ([dateof:3.6.5]).
+
+<p>^The truncate optimization can be permanently disabled for all queries
+by recompiling
+SQLite with the [SQLITE_OMIT_TRUNCATE_OPTIMIZATION] compile-time switch.</p>
+
+<p>The truncate optimization can also be disabled at runtime using
+the [sqlite3_set_authorizer()] interface.  ^If an authorizer callback
+returns [SQLITE_IGNORE] for an [SQLITE_DELETE] action code, then
+the DELETE operation will proceed but the truncate optimization will
+be bypassed and rows will be deleted one by one.</p>

@@ -1,0 +1,49 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+
+C0:  circle radius 10%
+     arrow right linerad then down 8*1.25*$h then right linerad+arrowht
+CTS: oval "CURRENT_TIMESTAMP" fit
+     arrow 2*arrowht
+X9:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+C9:  circle same
+NL:  oval "numeric-literal" fit with .w at (CTS.w,C0)
+     arrow from C0.e to NL.w
+     line from NL.e to arrowht left of C9.w
+     oval "string-literal" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "blob-literal" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "NULL" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "TRUE" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "FALSE" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "CURRENT_TIME" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad
+     oval "CURRENT_DATE" fit with .w at 1.25*$h below last oval.w
+     arrow from (linerad right of C0.e,last oval.n) down even with last oval \
+       then to last oval.w
+     arrow from last oval.e right even with X9
+     line right linerad then up linerad

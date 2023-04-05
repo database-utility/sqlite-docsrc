@@ -1,0 +1,331 @@
+<title>Floating Point Numbers</title>
+
+<table_of_contents>
+
+<h1>How SQLite Stores Numbers</h1>
+
+<p>
+SQLite stores integer values in the 64-bit 
+<a href="https://en.wikipedia.org/wiki/Two%27s_complement">twos-complement</a>
+format&sup1.
+This gives a storage range of -9223372036854775808 to +9223372036854775807,
+inclusive.  Integers within this range are exact.
+
+<p>
+So-called "REAL" or floating point values are stored in the
+<a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a>
+<a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">Binary-64</a>
+format&sup1.
+This gives a range of positive values between approximately
+1.7976931348623157e+308 and 4.9406564584124654e-324 with an equivalent
+range of negative values.  A binary64 can also be 0.0 (and -0.0), positive
+and negative infinity and "NaN" or "Not-a-Number".  Floating point
+values are approximate.
+
+<p>
+Pay close attention to the last sentence in the previous paragraph:
+<blockquote><b>
+Floating point values are approximate.
+</b></blockquote>
+
+<p>
+If you need an exact answer, you should not use binary64 floating-point
+values, in SQLite or in any other product.  This is not an SQLite limitation.
+It is a mathematical limitation inherent in the design of floating-point numbers.
+
+<p>&mdash;<br>&sup1;
+Exception:  The [R-Tree extension] stores information as 32-bit floating
+point or integer values.
+
+<h2>Floating-Point Accuracy</h2>
+
+<p>
+SQLite promises to preserve the 15 most significant digits of a floating
+point value.  However, it makes no guarantees about the accuracy of
+computations on floating point values, as no such guarantees are possible.
+Performing math on floating-point values introduces error.
+For example, consider what happens if you attempt to subtract two floating-point
+numbers of similar magnitude:
+
+<blockquote>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td align="right">1152693165.1106291898</td></tr>
+<tr><td align="right">-1152693165.1106280772</td></tr>
+<tr><td><hr>
+<tr><td align="right">0.0000011126
+</table>
+</blockquote>
+
+<p>The result shown above (0.0000011126) is the correct answer.  But if you
+do this computation using binary64 floating-point, the answer you get is
+0.00000095367431640625 - an error of about 14%.  If you do many similar
+computations as part of your program, the errors add up so that your final
+result might be completely meaningless.
+
+<p>The error arises because only about the first 15 significant digits of
+each number are stored accurately, and the first difference between the two numbers
+being subtracted is in the 16th digit.  
+
+<h2>Floating Point Numbers</h2>
+
+<p>
+The binary64 floating-point format uses 64 bits per number.  Hence there
+are 1.845e+19 different possible floating point values.  On the other hand
+there are infinitely many real numbers in the range of 
+1.7977e+308 and 4.9407e-324.  It follows then that binary64 cannot possibly
+represent all possible real numbers within that range.  Approximations are
+required.
+
+<p>
+An IEEE 754 floating-point value is an integer multiplied by a power
+of two:
+
+<blockquote>
+<big>M &times 2<sup><small>E</small></sup></big>
+</blockquote>
+
+<p>The M value is the "mantissa" and E is the "exponent".  Both
+M and E are integers.
+
+<p>For Binary64, M is a 53-bit integer and E is an 11-bit integer that is
+offset so that represents a range of values between -1074 and +972, inclusive.
+
+<p><i>(NB:  The usual description of IEEE 754 is more complex, and it is important
+to understand the added complexity if you really want to appreciate the details,
+merits, and limitations of IEEE 754.  However, the integer description shown
+here, while not exactly right, is easier to understand and is sufficient for
+the purposes of this article.)</i></p>
+
+<h3>Unrepresentable numbers</h3>
+
+<p>Not every decimal number with fewer than 16 significant digits can be
+represented exactly as a binary64 number.  In fact, most decimal numbers
+with digits to the right of the decimal point lack an exact binary64
+equivalent.  For example, if you have a database column that is intended
+to hold an item price in dollars and cents, the only cents value that
+can be exactly represented are 0.00, 0.25, 0.50, and 0.75.  Any other
+numbers to the right of the decimal point result in an approximation.
+If you provide a "price" value of 47.49, that number will be represented
+in binary64 as:
+
+<blockquote>
+6683623321994527 &times; 2<sup><small>-47</small></sup>
+</blockquote>
+
+<p>Which works out to be:
+
+<blockquote>
+47.49000000000000198951966012828052043914794921875
+</blockquote>
+
+<p>That number is very close to 47.49, but it is not exact.  It is a little
+too big.  If we reduce M by one to 6683623321994526 so that we have the
+next smaller possible binary64 value, we get:
+
+<blockquote>
+47.4899999999999948840923025272786617279052734375
+</blockquote>
+
+
+<p>
+This second number is too small.
+The first number is closer to the desired value of 47.49, so that is the
+one that gets used.  But it is not exact.  Most decimal values work this
+way in IEEE 754.  Remember the key point we made above:
+
+<blockquote><b>
+Floating point values are approximate.
+</b></blockquote>
+
+<p>If you remember nothing else about floating-point values, 
+please don't forget this one key idea.
+
+<h3>Is it close enough?</h3>
+
+<p>The precision provided by IEEE 754 Binary64 is sufficient for most computations.
+For example, if "47.49" represents a price and inflation is running
+at 2% per year, then the price is going up by about 0.0000000301 dollars per
+second.  The error in the recorded value of 47.49 represents about 66 nanoseconds
+worth of inflation.  So if the 47.49 price is exact
+when you enter it, then the effects of inflation will cause the true value to
+exactly equal the value actually stored
+(47.4900000000000019895196601282805204391479492187) in less than 
+one ten-millionth of a second.
+Surely that level of precision is sufficient for most purposes?
+
+<h1>Extensions For Dealing With Floating Point Numbers</h1>
+
+<tcl>hd_fragment ieee754ext {ieee754 extension}</tcl>
+<h2>The ieee754.c Extension</h2>
+
+<p>The ieee754 extension converts a floating point number between its
+binary64 representation and the M&times;2<sup><small>E</small></sup> format.
+In other words in the expression:
+
+<blockquote>
+<big>F = M &times 2<sup><small>E</small></sup></big>
+</blockquote>
+
+<p>The ieee754 extension converts between F and (M,E) and back again.
+
+<p>The ieee754 extension is not part of the [amalgamation], but it is included
+by default in the [CLI].  If you want to include the ieee754 extension in your
+application, you will need to compile and load it separately.
+
+<tcl>hd_fragment ieee754 {ieee754() function}</tcl>
+<h3>The ieee754() function</h3>
+
+<p>The ieee754(F) SQL function takes a single floating-point argument
+as its input and returns a string that looks like this:
+
+<blockquote>
+'ieee754(M,E)'
+</blockquote>
+
+<p>Except that the M and E are replaced by the mantissa and exponent of the
+floating point number.  For example:
+
+<codeblock>
+sqlite> .mode box
+sqlite> SELECT ieee754(47.49) AS x;
+┌───────────────────────────────┐
+│               x               │
+├───────────────────────────────┤
+│ ieee754(6683623321994527,-47) │
+└───────────────────────────────┘
+</codeblock>
+
+<p>
+Going in the other direction, the 2-argument version of ieee754() takes
+the M and E values and converts them into the corresponding F value:
+
+<codeblock>
+sqlite> select ieee754(6683623321994527,-47) as x;
+┌───────┐
+│   x   │
+├───────┤
+│ 47.49 │
+└───────┘
+</codeblock>
+
+<tcl>hd_fragment ieee754m {ieee754_mantissa() function} \
+   {ieee754_exponent() function} </tcl>
+<h3>The ieee754_mantissa() and ieee754_exponent() functions</h3>
+
+<p>The text output of the one-argument form of ieee754() is great for human
+readability, but it is awkward to use as part of a larger expression.  Hence
+the ieee754_mantissa() and ieee754_exponent() routines were added to return
+the M and E values corresponding to their single argument F
+value.
+For example:
+
+<codeblock>
+sqlite> .mode box
+sqlite> SELECT ieee754_mantissa(47.49) AS M, ieee754_exponent(47.49) AS E;
+┌──────────────────┬─────┐
+│        M         │  E  │
+├──────────────────┼─────┤
+│ 6683623321994527 │ -47 │
+└──────────────────┴─────┘
+</codeblock>
+
+<tcl>hd_fragment ieee754b {ieee754_from_blob() function} \
+   {ieee754_to_blob() function} </tcl>
+<h3>The ieee754_from_blob() and ieee754_to_blob() functions</h3>
+
+<p>The ieee754_to_blob(F) SQL function converts the floating point number F
+into an 8-byte BLOB that is the big-endian binary64 encoding of that number.
+The ieee754_from_blob(B) function goes the other way, converting an 8-byte
+blob into the floating-point value that the binary64 encoding represents.
+
+<p>So, for example, if you read
+<a href='https://en.wikipedia.org/wiki/Double-precision_floating-point_format'>on
+Wikipedia</a> that the encoding for the minimum positive binary64 value is
+0x0000000000000001, then you can find the corresponding floating point value
+like this:
+
+<codeblock>
+sqlite> .mode box
+sqlite> SELECT ieee754_from_blob(x'0000000000000001') AS F;
+┌───────────────────────┐
+│           F           │
+├───────────────────────┤
+│ 4.94065645841247e-324 │
+└───────────────────────┘
+</codeblock>
+
+<p>Or go the other way:
+
+<codeblock>
+sqlite> .mode box
+sqlite> SELECT quote(ieee754_to_blob(4.94065645841247e-324)) AS binary64;
+┌─────────────────────┐
+│      binary64       │
+├─────────────────────┤
+│ X'0000000000000001' │
+└─────────────────────┘
+</codeblock>
+
+<tcl>hd_fragment decext {decimal extension}</tcl>
+<h2>The decimal.c Extension</h2>
+
+<p>The decimal extension provides arbitrary-precision decimal arithmetic on
+numbers stored as text strings.  Because the numbers are stored to arbitrary
+precision and as text, no approximations are needed.  Computations can be
+done exactly.
+
+<p>The decimal extension is not (currently) part of the SQLite [amalgamation].
+However, it is included in the [CLI].
+
+<p>There are three math functions available:
+
+<p>
+<ul>
+<li> decimal_add(A,B)
+<li> decimal_sub(A,B)
+<li> decimal_mul(A,B)
+</ul>
+</p>
+
+<p>These functions respectively add, subtract, and multiply their arguments
+and return a new text string that is the decimal representation of the result.
+There is no division operator at this time.
+
+<p>Use the decimal_cmp(A,B) to compare two decimal values.  The result will
+be negative, zero, or positive if A is less than, equal to, or greater than B,
+respectively.
+
+<p>The decimal_sum(X) function is an aggregate, like the built-in
+[sum() aggregate function], except that decimal_sum() computes its result
+to arbitrary precision and is therefore precise.
+
+<p>Finally, the decimal extension provides the "decimal" collating sequences
+that compares decimal text strings in numeric order.
+
+<h1>Techniques</h1>
+
+<p>
+The following SQL illustrates how to use the ieee754 and decimal
+extensions to compute the exact decimal equivalent
+for a binary64 floating-point number.
+
+<codeblock>
+-- The pow2 table will hold all the necessary powers of two.
+CREATE TABLE pow2(x INTEGER PRIMARY KEY, v TEXT);
+WITH RECURSIVE c(x,v) AS (
+  VALUES(0,'1')
+  UNION ALL
+  SELECT x+1, decimal_mul(v,'2') FROM c WHERE x+1&lt;=971
+) INSERT INTO pow2(x,v) SELECT x, v FROM c;
+WITH RECURSIVE c(x,v) AS (
+  VALUES(-1,'0.5')
+  UNION ALL
+  SELECT x-1, decimal_mul(v,'0.5') FROM c WHERE x-1&gt;=-1075
+) INSERT INTO pow2(x,v) SELECT x, v FROM c;
+
+-- This query finds the decimal representation of each value in the "c" table.
+WITH c(n) AS (VALUES(47.49))
+                 ----XXXXX----------- Replace with whatever you want
+SELECT decimal_mul(ieee754_mantissa(c.n),pow2.v)
+  FROM pow2, c WHERE pow2.x=ieee754_exponent(c.n);
+</codeblock>

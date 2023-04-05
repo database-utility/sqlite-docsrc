@@ -1,0 +1,28 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     box "cte-table-name" fit
+     arrow 2*arrowht
+     oval "AS" fit
+     arrow 2*arrowht
+     oval "(" bold fit
+     arrow 2*arrowht
+IS:  oval "initial-select" fit
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+U1:  oval "UNION" fit
+     arrow 2*arrowht
+     oval "ALL" fit
+     arrow right linerad then up even with C0 then right linerad+arrowht
+RS:  oval "recursive-select" fit
+     arrow 2*arrowht
+     oval ")" bold fit
+     arrow 2*arrowht
+     circle same
+
+     arrow from IS.e right even with U1.w
+     oval "UNION" fit
+     line to arrowht left of RS.w

@@ -1,0 +1,89 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow width linerad+2*arrowht
+ON:  oval "ON" fit
+     arrow 1.5*arrowht
+     oval "CONFLICT" fit
+     arrow right linerad*2 then down $h then right linerad+arrowht
+     oval "(" bold fit
+     arrow
+IC:  box "indexed-column" fit
+     arrow
+RP1: oval ")" bold fit
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+     oval "WHERE" fit
+     arrow 1.5*arrowht
+E1:  box "expr" fit
+     arrow right linerad then up linerad+arrowht
+     arrow up even with ON then right linerad*2+arrowht
+DO:  oval "DO" fit
+
+     arrow from RP1.e right even with E1.e; line right linerad then up linerad
+     line from CONFLICT.e to arrowht west of DO.w
+
+C1:  oval "," bold fit at 1.25*$h below IC
+     arrow from IC.e right linerad then down even with C1 then to C1.e
+     line from C1.w left even with linerad+arrowht west of IC.w \
+        then up even with IC then right linerad
+
+     $conflictTargetWest = CONFLICT.e.x+linerad
+     $conflictTargetEast = DO.w.x-(linerad+arrowht)
+     $conflictTargetNorth = CONFLICT.n.y
+     $conflictTargetSouth = C1.s.y-0.5*$h
+CTB: box color lightgray fill None thickness 150% behind CONFLICT \
+        width $conflictTargetEast - $conflictTargetWest \
+        height $conflictTargetNorth - $conflictTargetSouth \
+        at 0.5*($conflictTargetWest+$conflictTargetEast),\
+           0.5*($conflictTargetNorth+$conflictTargetSouth)
+     text "conflict target" italic color gray with sw at CTB.nw
+
+Y1:  2.0*$h below C1
+
+     arrow from DO.e right linerad then down even with Y1 \
+        then left even with .5<ON,DO>
+     arrow left even with linerad right of C0 then down 2.5*$h \
+        then right linerad+arrowht
+     oval "UPDATE" fit
+     arrow 1.5*arrowht
+     oval "SET" fit
+     arrow right then down 1.25*$h then right linerad+arrowht
+CNL: box "column-name-list" fit
+     arrow right then up even with UPDATE then right linerad+arrowht
+EQ:  oval "=" bold fit
+     arrow 1.5*arrowht
+E2:  box "expr" fit
+     arrow 2*linerad+1.5*arrowht
+     oval "WHERE" fit
+     arrow 1.5*arrowht
+E3:  box "expr" fit
+     arrow right linerad then up 1.25*$h \
+           then right even with linerad*5+arrowht east of DO
+OUT: circle same
+
+     oval "NOTHING" fit with .w at 1.25*$h above UPDATE.w
+     arrow from (linerad+arrowht west of NOTHING.w,NOTHING.n) \
+         down even with NOTHING then to NOTHING.w
+     line from NOTHING.e to arrowht left of last circle.w
+
+     arrow from linerad right of E2.e \
+        right linerad then up even with NOTHING then right
+
+C2:  oval "," bold fit at (.5<SET.e,E2.e>,1.25*$h below CNL)
+     arrow from E2.e right linerad then down even with C2 then to C2.e
+     arrow from C2.w left even with arrowht east of SET.e \
+        then up even with CNL
+     line up even with SET then right
+
+     arrow from SET.e right even with CNL.w
+     oval "column-name" fit
+     line to arrowht west of EQ.w
+
+     arrow from 2*linerad+arrowht west of OUT.w \
+           then right linerad then up even with RP1
+     arrow up even with 2*$h above DO then left even with IC
+     line left even with 2*linerad+arrowht west of ON \
+          then down even with ON then right linerad

@@ -1,0 +1,260 @@
+<title>SQLite Pro Support</title>
+<tcl>hd_keywords {professional support}</tcl>
+
+<h1 align="center">
+Professional Support &amp; Extension Products
+</h1>
+
+<tcl>
+set entrylist {}
+proc support_entry {itemno title desc cost link1 link2} {
+  global entrylist
+  lappend entrylist $itemno $title $desc $cost $link1 $link2
+}
+proc generate_support_html {} {
+  global entrylist
+
+  hd_putsnl "<div class='desktoponly'>"
+  hd_putsnl "<table border=0 cellspacing=20 width='100%'>"
+  foreach {itemno title desc cost link1 link2} $entrylist {
+    hd_puts "<tr><td valign=top><b>$itemno.</b></td>"
+    hd_putsnl "<td valign=top><b>$title.</b> $desc</td>"
+    hd_putsnl "<td valign=top width=165>$cost</td>"
+    foreach {tag url} $link1 break
+    hd_puts   "<td valign=top align=left width=145>"
+    hd_putsnl "<a class='button' href='$url'>$tag</a><br>"
+    foreach {tag url} $link2 break
+    hd_putsnl "<a class='button' href='$url'>$tag</a></td>"
+    hd_putsnl "</tr>"
+  }
+  hd_putsnl "</table></div>"
+
+  hd_putsnl "<div class='mobileonly'>"
+  hd_putsnl "<ol>"
+  foreach {itemno title desc cost link1 link2} $entrylist {
+    hd_putsnl "<li value=$itemno><p>"
+    hd_putsnl "<b>$title.</b> $desc"
+    hd_putsnl "<p>Cost: $cost"
+    foreach {tag url} $link1 break
+    hd_putsnl "<p><a class='button' href='$url'>$tag</a>"
+    foreach {tag url} $link2 break
+    hd_putsnl "<a class='button' href='$url'>$tag</a>"
+    hd_putsnl "</li>"
+  }
+  hd_putsnl "</ol></div>"
+
+  set entrylist {}
+}
+</tcl>
+
+<h2>Support
+<font size=2>(<a href="#detail">details below</a>)</font></h2>
+
+<tcl>
+support_entry 1 {Public Forum} {
+  Help and advice from a world-wide community of experts.
+} Free \
+ {{More Info} https://sqlite.org/forum/about}\
+ {{Recent Posts} https://sqlite.org/forum/forummain}
+
+support_entry 2 {Annual Maintenance Subscription} {
+  Private, expert email advice from the developers of SQLite.
+} {$1500/year} \
+  {{More Info} https://sqlite.org/com/ams.html} \
+  {{Purchase} https://sqlite.org/purchase/ams}
+
+support_entry 3 {Technical Support} {
+  High-priority email and phone support directly from the SQLite developers.
+  Guaranteed response time available as an option.
+} {$8K-85K/year} \
+  {{More Info} https://sqlite.org/com/tech.html} \
+  {{Request A Quote} https://sqlite.org/com/contact.html}
+
+support_entry 4 {SQLite Consortium Membership} {
+  Premium enterprise support including on-site visits and
+  access to all proprietary extensions and test suites.
+} {$120K/year} \
+  {{More Info} https://sqlite.org/com/member.html} \
+  {{Request A Quote} https://sqlite.org/com/contact.html}
+
+generate_support_html
+</tcl>
+
+<h2>Licenses
+<font size=2>(<a href="#ext">details below</a>)</font></h2>
+
+<tcl>
+support_entry 5 {SQLite License} {
+  Warranty of title and perpetual right-to-use for the SQLite source code.
+} {$6000 one time fee} \
+  {{More Info} https://sqlite.org/copyright.html} \
+  {{Purchase} https://sqlite.org/purchase/license}
+
+support_entry 6 {SQLite Encryption Extension (SEE)} {
+   A drop-in replacement for public-domain SQLite source code that has
+   the added ability to read/write AES-encrypted databases.
+} {$2000 one time fee} \
+  {{More Info} https://sqlite.org/see/doc/release/www/readme.wiki} \
+  {{Purchase} https://sqlite.org/purchase/see}
+
+support_entry 7 {Compressed And Encrypted Read-Only Database (CEROD)} {
+   A drop-in replacement for public-domain SQLite source code
+   that has the added ability to read database that has been both
+   compressed and encrypted.
+} {$2000 one time fee} \
+  {{More Info} https://sqlite.org/cerod/doc/release/www/readme.wiki} \
+  {{Buy Now!} https://sqlite.org/purchase/cerod}
+
+support_entry 8 {The ZIPVFS Read/Write Compressed Database Extension} {
+   The ZIPVFS extension automatically compresses and encrypts
+   your data as it is written to disk, and decompressed and decrypts
+   it while reading.
+} {$4000 one time fee} \
+  {{More Info} https://sqlite.org/zipvfs/doc/release/www/readme.wiki} \
+  {{Buy Now!} https://sqlite.org/purchase/zipvfs}
+
+generate_support_html
+</tcl>
+
+<h2>Special Services
+<font size=2>(<a href="#th3">details below</a>)</font></h2>
+
+<tcl>
+support_entry 9 {TH3 Testing Support} {
+  The <a href="https://sqlite.org/th3.html">TH3 test harness</a>
+  is an aviation-grade test suite for SQLite. SQLite developers
+  can run TH3 on specialized hardware and/or using specialized
+  compile-time options, according to customer specification,
+  either remotely or on customer premises. Pricing for this
+  services is on a case-by-case basis depending on requirements.
+} {call} \
+  {{More Info} https://sqlite.org/th3.html} \
+  {{Request A Quote} https://sqlite.org/com/contact.html}
+
+generate_support_html
+</tcl>
+
+<a name="detail"></a>
+<h2>Further Information</h2>
+
+<p>SQLite is free and works great.
+Most people use SQLite without
+any kind of license or support.</p>
+
+<p>Free support for SQLite is available on the public
+<a href="https://sqlite.org/forum/forummain">SQLite Forum</a>.
+The forum is monitored by a large
+community of experts, including the core SQLite development team,
+who are able to resolve just about
+any problems with SQLite that you are likely to have.</p>
+
+<p>If you do not want to discuss your issues on a public and open forum, an
+<a href="https://sqlite.org/com/ams.html">Annual Maintenance
+Subscription</a> or "AMS" might
+serve your needs better.
+An AMS entitles you to private email support directly from the developers of
+SQLite.  The level of support with an AMS is similar to the support one
+gets from the public forum except that an AMS includes a unilateral
+promise of non-disclosure, so with an AMS you can discuss your issues
+with the SQLite developers in private, without the whole world watching.
+An AMS costs $1500 per year.</p>
+
+<p>Users with more advanced support needs can opt for a
+<a href="https://sqlite.org/com/tech.html">Technical Support
+Agreement</a>.
+Technical support agreements are customized to the needs of each
+individual client, but generally include direct telephone support
+and priority handling of issues and bugs.  Guaranteed response time
+is available as an option.  The cost of
+technical support varies but is generally
+in the range of $8000 to $35000 per year.</p>
+
+<p>If SQLite is "mission critical" to your company, then you may
+want to become an
+<a href="https://sqlite.org/com/member.html">SQLite Consortium
+Member</a>.  The SQLite
+Consortium is a collaboration of companies who sponsor ongoing development
+of SQLite in exchange for enterprise-level technical support, on-site
+visits from the SQLite developers, unlimited access to all licensed
+products, and strong guarantees that SQLite will remain in the public
+domain, free and independent, and will not come under the control of
+a competitor.</p>
+
+<a name="ext"></a>
+<h2>Software Licenses</h2>
+
+<p>The SQLite source code is in the
+<a href="https://sqlite.org/copyright.html">public domain</a>,
+and is free for use
+by anyone and for any purpose.  No license is required.  However, some
+users desire a license so that they can have warranty of title, or just
+because their company lawyers say they need one.  A
+<a href="https://sqlite.org/purchase/license">perpetual license
+and warranty of title</a>
+for the core SQLite source code is available for this purpose.</p>
+
+<p>The
+<a href="https://sqlite.org/purchase/see">SQLite Encryption
+Extension (SEE)</a>,
+the <a href="https://sqlite.org/purchase/zipvfs">ZIPVFS Extension</a>,
+and the <a href="https://sqlite.org/purchase/cerod">Compressed and
+Encrypted ReadOnly Database (CEROD)</a> extension are enhanced versions
+of SQLite that handle encrypted
+and/or compressed databases.  SEE can read and write encrypted databases.
+SEE encrypts all database content, including metadata, so that the database
+file appears as white noise.  ZIPVFS
+compresses the database on-the-fly using application-supplied
+compression and decompression functions.
+CEROD reads a compressed database that is
+also optionally encrypted.  All of SEE, ZIPVFS, and CEROD are
+supplied in source code form only; the licensee is responsible for
+compiling the products for their chosen platform.  It is not difficult
+to compile any of these extension.  All products come in the form of an
+[amalgamation|{amalgamated source file}]
+named "sqlite3.c".  So compiling SEE, ZIPVFS, or CEROD into an application
+is simply a matter of substituting the SEE-, ZIPVFS-, or CEROD-enabled sqlite3.c
+source file in place of the public-domain sqlite3.c source file and recompiling.
+Licenses for SEE, ZIPVFS, and CEROD are perpetual.
+All three extension can read and write ordinary,
+uncompressed and unencrypted database files.</p>
+
+<a name="th3"></a>
+<h2>Testing Services</h2>
+
+<p>The <a href="https://sqlite.org/th3.html">Test Harness #3 (TH3)</a> is
+a suite of test cases for SQLite that provide 100% branch test coverage
+(and 100% modified condition/decision coverage) for the core SQLite in
+an as-deployed configuration using only published and documented interfaces.
+TH3 is designed for use with embedded devices, and is compatible with
+DO-178B.  Every release of the public-domain SQLite is tested using TH3,
+and so all users benefit from the TH3 tests.  But the TH3 tests are not
+themselves public.  Hardware or system manufactures who want to have
+TH3 test run on their systems can negotiate a service agreement to have
+the SQLite Developers run those tests.</p>
+
+<h2>About The SQLite Team</h2>
+
+<p>Paid support options and products are provided by
+Hipp, Wyrick &amp; Company, Inc., (Hwaci), a
+<a href="http://en.wikipedia.org/wiki/Georgia_(U.S._state)">Georgia</a>
+corporation
+with headquarters in
+<a href="http://en.wikipedia.org/wiki/Charlotte,_North_Carolina">
+Charlotte, North Carolina</a> and has been in business since
+1992.
+Hwaci has an international team of
+employees and associates representing the best available talent.
+We are a 100% engineering company.  There is
+no sales staff.
+Our goal is to provide outstanding service and honest advice
+without spin or sales-talk.</p>
+
+<p>Hwaci is a small company but it is
+also closely held and debt-free and has low
+fixed costs, which means that it is largely immune to buy-outs,
+take-overs, and market down-turns.  Hwaci intends to
+continue operating in its current form, and at roughly its current
+size until at least the year 2050.
+We expect to be here when you need us,
+even if that need is many years in the future.</p>
+</body></html>

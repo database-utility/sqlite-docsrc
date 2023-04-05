@@ -1,0 +1,19 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+     arrow 2*arrowht
+     oval "DETACH" fit
+A1:  arrow
+DB:  oval "DATABASE" fit
+A2:  arrow
+     oval "schema-name" fit
+     arrow 2*arrowht
+     circle radius 10%
+
+     # DATABASE bypass
+     arrow from A1.start right linerad then down 0.8*$h \
+        then right even with DB
+     line right even with .5<A2.start,A2> then up even with A2 \
+        then right linerad

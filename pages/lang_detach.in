@@ -1,0 +1,20 @@
+<title>DETACH</title>
+<tcl>
+hd_keywords *detach *DETACH {DETACH DATABASE}
+</tcl>
+
+<fancy_format>
+<tcl>
+RecursiveBubbleDiagram detach-stmt
+</tcl>
+
+<p>^This statement detaches an additional database connection previously 
+attached using the [ATTACH] statement.  
+^When not in [shared cache mode], 
+it is possible to have the same database file attached multiple times using 
+different names, and detaching one connection to a file will leave the 
+others intact.</p>
+
+<p>
+^In [shared cache mode], attempting to attach the same database file more
+than once results in an error.

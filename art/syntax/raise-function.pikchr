@@ -1,0 +1,35 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     oval "RAISE" fit
+     arrow 2*arrowht
+LP:  oval "(" bold fit
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+RBK: oval "ROLLBACK" fit
+     arrow
+     oval "," bold fit
+     arrow 2*arrowht
+EMG: oval "error-message" fit
+     arrow right linerad then up even with C0 then right linerad+arrowht
+RP:  oval ")" bold fit
+     arrow 2*arrowht
+C99: circle same
+ 
+     arrow from LP.e right even with RBK.w
+     oval "IGNORE" fit
+     arrow right even with EMG
+     line to arrowht left of RP.w
+
+ABT: oval "ABORT" fit with .w at 1.25*$h below RBK.w
+     arrow from ABT.e right even with RBK.e
+     line right linerad then up even with RBK then right linerad
+FAL: oval "FAIL" fit with .w at 1.25*$h below ABT.w
+     arrow from FAL.e right even with RBK.e
+     line right linerad then up even with ABT.n
+
+     arrow from (linerad right of LP.e,RBK.n) down even with FAL then to FAL.w
+     arrow from (linerad right of LP.e,ABT.n) down even with ABT then to ABT.w

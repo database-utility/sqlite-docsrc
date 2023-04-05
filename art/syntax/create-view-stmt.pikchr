@@ -1,0 +1,65 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+CR:  oval "CREATE" fit
+T1:  oval "TEMP" fit with .w at (linewid right of CR.e,.8*$h below CR)
+T2:  oval "TEMPORARY" fit with .w at 1.25*$h below T1.w
+VW:  oval "VIEW" fit with .w at (linewid right of T2.e,CR)
+     arrow from CR.e right even with T2; arrow to VW.w
+     arrow from CR.e right linerad then down even with T1 then to T1.w
+     arrow from CR.e right linerad then down even with T2 then to T2.w
+     line from T2.e right linerad then up even with VW \
+        then to arrowht left of VW.w
+     line from T1.e right even with linerad right of T2.e then up linerad
+     arrow from VW.e right
+     oval "IF" fit
+     arrow right 2*arrowht
+     oval "NOT" fit
+     arrow 2*arrowht
+ETS: oval "EXISTS" fit
+
+     # IF NOT EXISTS bypass
+Y1:  .5*$h below T2.s  # vertical position of back-arrow
+     arrow from VW.e right linerad then down even with Y1 then left even with T2
+     arrow from ETS.e right linerad then down even with Y1 \
+        then left even with ETS.w
+     line left even with VW.w
+
+     # second row
+     arrow left even with first circle then down $h*1.25 then right 2*arrowht
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+VN:  oval "view-name" fit
+     arrow right linerad then down $h then right 2*arrowht
+LP:  oval "(" bold fit
+     arrow right
+CNL: oval "column-name" fit
+     arrow right
+RP:  oval ")" bold fit
+     arrow right linerad then up even with VN then right 2*arrowht
+     oval "AS" fit
+     arrow 2*arrowht
+     box "select-stmt" fit
+     arrow
+     circle same
+
+     # schema-name bypass
+     arrow from (first circle,SN.n) down even with $h below SN \
+         then right even with SN
+     line right even with 2*arrowht west of VN.w then up even with VN \
+         then to arrowht west of VN.w
+
+     # column-name list bypass
+     arrow from VN.e right even with CNL
+     line to arrowht west of AS.w
+
+     # column-name loop
+CMA: oval "," bold fit at 1.25*$h below CNL
+     arrow from CNL.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht west of CNL.w \
+        then up even with CNL then right linerad

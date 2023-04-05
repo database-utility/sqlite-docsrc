@@ -1,0 +1,44 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+     arrow 2*arrowht
+HT:  oval "aggregate-func" fit
+     arrow 50%
+LP:  oval "(" bold fit
+A1:  arrow 2*arrowht
+     arrow right arrowht then up HT.ht then right 2*arrowht
+DCT: oval "DISTINCT" fit
+A2:  arrow right 50%
+A4:  arrow right arrowht then down even with A1 then right 2*arrowht
+     arrow
+EX:  box "expr" fit
+A3:  arrow 150%
+RP:  oval ")" bold fit
+     arrow right 2*arrowht then down HT.ht then right 2*arrowht
+FC:  box "filter-clause" fit
+     arrow right 50% then up even with A3 then right
+     circle radius 10%
+
+     # Fill in straight-through bypass of filter-clause
+     arrow from RP.e right even with FC
+     arrow to last circle.w
+
+     # Fill in straight-through bypass of DISTINCT
+     arrow from end of A1 right even with DCT
+     arrow to end of A4
+
+     # Loop over expr
+CMA: oval "," bold fit at 0.8*HT.ht above EX.n
+     arrow from EX.e right 2*arrowht then up even with CMA then to CMA.e
+     arrow from CMA.w left even with 2*arrowht west of EX.w then down even with EX then to EX.w
+
+     # Argument by-pass
+ST:  oval "*" bold fit at 1*HT.ht below .5<LP,RP>
+     arrow from end of A1 right arrowht then down even with ST then to ST.w
+     arrow from ST.e right even with EX
+     line right even with A3 then up even with A3 then right arrowht
+
+     # by-pass of the "*" in the argument by-pass
+     arrow from (DCT,ST) right arrowht then down .8*HT.ht then right even with ST
+     line right then up even with ST then right arrowht

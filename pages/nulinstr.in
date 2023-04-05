@@ -1,0 +1,122 @@
+<title>NUL Characters In Strings</title>
+<tcl>
+hd_keywords {NUL characters in strings}
+</tcl>
+
+<fancy_format>
+
+<h1>Introduction</h1>
+
+<p>
+SQLite allows NUL characters (ASCII 0x00, Unicode \u0000) in the middle
+of string values stored in the database.  However, the use of NUL within
+strings can lead to surprising behaviors:
+
+<ol>
+<li><p>
+The [length() SQL function] only counts characters up to and excluding
+the first NUL.
+
+
+<li><p>
+The [quote() SQL function] only shows characters up to and excluding
+the first NUL.
+
+<li><p>
+The [.dump] command in the [CLI] omits the first NUL character and all
+subsequent text in the SQL output that it generates.  In fact, the
+[CLI] omits everything past the first NUL character in all contexts.
+</ol>
+
+<p>
+The use of NUL characters in SQL text strings is not recommended.
+
+<h1>Unexpected Behavior</h1>
+
+<p>
+Consider the following SQL:
+
+<codeblock>
+  CREATE TABLE t1(
+    a INTEGER PRIMARY KEY,
+    b TEXT
+  );
+  INSERT INTO t1(a,b) VALUES(1, 'abc'||char(0)||'xyz');
+
+  SELECT a, b, length(b) FROM t1;
+</codeblock>
+
+<p>
+The SELECT statement above shows output of:
+
+<codeblock>
+  1,'abc',3
+</codeblock>
+
+<p>
+(Through this document, we assume that the [CLI] has "[.mode quote]" set.)
+But if you run:
+
+<codeblock>
+  SELECT * FROM t1 WHERE b='abc';
+</codeblock>
+
+<p>
+Then no rows are returned.  SQLite knows that the t1.b column actually
+holds a 7-character string, and the 7-character string 'abc'||char(0)||'xyz'
+is not equal to the 3-character string 'abc', and so no rows are returned.
+But a user might be easily confused by this because the [CLI] output
+seems to show that the string has only 3 characters.  This seems like
+a bug.  But it is how SQLite works.
+
+<h1>How To Tell If You Have NUL Characters In Your Strings</h1>
+
+<p>
+If you [CAST] a string into a BLOB, then the entire length of the
+string is shown.  For example:
+
+<codeblock>
+  SELECT a, CAST(b AS BLOB) FROM t1;
+</codeblock>
+
+<p>
+Gives this result:
+
+<codeblock>
+  1,X'6162630078797a'
+</codeblock>
+
+<p>
+In the BLOB output, you can clearly see the NUL character as the 4th
+character in the 7-character string.
+
+<p>
+Another, more automated, way
+to tell if a string value X contains embedded NUL characters is to
+use an expression like this:
+
+<codeblock>
+   instr(X,char(0))
+</codeblock>
+
+<p>
+If this expression returns a non-zero value N, then there exists an 
+embedded NUL at the N-th character position.  Thus to count the number
+of rows that contain embedded NUL characters:
+
+<codeblock>
+   SELECT count(*) FROM t1 WHERE instr(b,char(0))>0;
+</codeblock>
+
+<h1>Removing NUL Characters From A Text Field</h1>
+
+<p>
+The following example shows how to remove NUL character, and all text
+that follows, from a column of a table.  So if you have a database file
+that contains embedded NULs and you would like to remove them, running
+UPDATE statements similar to the following might help:
+
+<codeblock>
+  UPDATE t1 SET b=substr(b,1,instr(b,char(0)))
+   WHERE instr(b,char(0));
+</codeblock>

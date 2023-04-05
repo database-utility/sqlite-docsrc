@@ -1,0 +1,87 @@
+<title>INSERT</title>
+<tcl>
+hd_keywords *insert INSERT *INSERTs
+</tcl>
+
+<fancy_format>
+<h1>Overview</h1>
+
+<tcl>
+RecursiveBubbleDiagram insert-stmt
+</tcl>
+
+<p>The INSERT statement comes in three basic forms.  
+<ol>
+<li><p><b>INSERT INTO </b><i>table</i><b> VALUES(...);</b>
+<p>^The first form (with the "VALUES" keyword) creates one or more
+new rows in
+an existing table. ^If the <yyterm>column-name</yyterm> list after
+<yyterm>table-name</yyterm> is omitted then the number
+of values inserted into each row
+must be the same as the number of columns in the table. ^In this case
+the result of evaluating the left-most expression from each term of
+the VALUES list is inserted into the left-most column of each new row,
+and so forth for each subsequent expression. ^If a <yyterm>column-name</yyterm>
+list is specified, then the number of values in each term of the
+VALUE list must match the number of
+specified columns. ^Each of the named columns of the new row is populated
+with the results of evaluating the corresponding VALUES expression. ^Table
+columns that do not appear in the column list are populated with the 
+[default column value] (specified as part of the [CREATE TABLE] statement), or
+with NULL if no [default value] is specified.
+
+<li><p><b>INSERT INTO </b><i>table</i><b> SELECT ...;</b>
+<p>The second form of the INSERT statement contains a [SELECT] statement
+instead of a VALUES clause. ^A new entry is inserted into the table for each
+row of data returned by executing the SELECT statement. ^If a column-list is
+specified, the number of columns in the result of the SELECT must be the same
+as the number of items in the column-list. ^Otherwise, if no column-list is
+specified, the number of columns in the result of the SELECT must be the same
+as the number of columns in the table. ^Any SELECT statement, including
+[compound SELECTs] and SELECT statements with [ORDER BY] and/or [LIMIT] clauses, 
+may be used in an INSERT statement of this form.
+
+<p>To avoid a parsing ambiguity, the SELECT statement should always
+contain a WHERE clause, even if that clause is simply "WHERE true",
+if the [upsert-clause] is present.  Without the WHERE clause, the
+parser does not know if the token "ON" is part of a join constraint
+on the SELECT, or the beginning of the [upsert-clause].
+
+<li><p><b>INSERT INTO </b><i>table</i><b> DEFAULT VALUES;</b>
+<p>The third form of an INSERT statement is with DEFAULT VALUES.
+^(The INSERT ... DEFAULT VALUES statement inserts a single new row into the
+named table.)^ ^Each column of the new row is populated with its 
+[default value], or with a NULL if no default value is specified 
+as part of the column definition in the [CREATE TABLE] statement.
+The [upsert-clause] is not supported after DEFAULT VALUES.
+
+</ol>
+
+<p>
+^The initial "INSERT" keyword can be replaced by
+"REPLACE" or "INSERT OR <i>action</i>" to specify an alternative
+constraint [ON CONFLICT|conflict resolution algorithm] to use during 
+that one INSERT command.
+For compatibility with MySQL, ^the parser allows the use of the
+single keyword <a href="lang_replace.html">REPLACE</a> as an 
+alias for "INSERT OR REPLACE".
+
+<p>^(The optional "<i>schema-name</i><b>.</b>" prefix on the 
+<yyterm>table-name</yyterm>
+is supported for top-level INSERT statements only.)^  ^The table name must be
+unqualified for INSERT statements that occur within [CREATE TRIGGER] statements.
+^Similarly, the "DEFAULT VALUES" form of the INSERT statement is supported for
+top-level INSERT statements only and not for INSERT statements within
+triggers.
+<p>
+
+<p>The optional "AS <yyterm>alias</yyterm>" phrase provides an alternative
+name for the table into which content is being inserted.  The alias name
+can be used within WHERE and SET clauses of the [UPSERT].  If there is no
+[upsert-clause], then the <yyterm>alias</yyterm> is pointless, but also
+harmless.
+
+<p>See the separate [UPSERT] documentation for the additional trailing
+syntax that can cause an INSERT to behave as an UPDATE if the INSERT would
+otherwise violate a uniqueness constraint.  The [upsert clause] is not
+allowed on an "INSERT ... DEFAULT VALUES".

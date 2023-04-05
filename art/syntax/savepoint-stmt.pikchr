@@ -1,0 +1,12 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     oval "SAVEPOINT" fit
+     arrow 2*arrowht
+     oval "savepoint-name" fit
+     arrow 2*arrowht
+     circle same

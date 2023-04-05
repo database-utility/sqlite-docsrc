@@ -1,0 +1,44 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow
+E1:  box "expr" fit
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+AS:  oval "AS" fit
+     arrow
+     oval "column-alias" fit
+     arrow 2*arrowht
+X9:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+C99: circle same
+
+     # AS bypass
+     arrow from (linerad right of E1.e,AS.n) down even with $h below AS \
+        then right even with AS
+     line right even with linerad east of AS.e then up even with AS \
+        then right linerad
+
+     # alias bypass
+     arrow from E1.e to .5<E1.e,C99.w>; line to arrowht west of C99.w
+
+     # "*" option
+     arrow from C0.e right linerad then down 3.0*$h \
+         then right linerad+arrowht
+STR: oval "*" bold fit
+     arrow right even with X9
+     line right linerad then up even with AS.n
+
+     # table.* option
+     arrow from (linerad right of C0.e,STR.n) \
+        down even with 1.25*$h below STR \
+        then right linerad+arrowht
+     oval "table-name" fit
+     arrow 2*arrowht
+     oval "." bold fit
+     arrow 2*arrowht
+     oval "*" bold fit
+     arrow right even with X9
+     line right linerad then up even with STR.n

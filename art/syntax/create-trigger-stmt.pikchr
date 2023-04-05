@@ -1,0 +1,155 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+CR:  oval "CREATE" fit
+T1:  oval "TEMP" fit with .w at (linewid right of CR.e,.8*$h below CR)
+T2:  oval "TEMPORARY" fit with .w at 1.25*$h below T1.w
+TGR: oval "TRIGGER" fit with .w at (linewid right of T2.e,CR)
+     arrow from CR.e right even with T2; arrow to TGR.w
+     arrow from CR.e right linerad then down even with T1 then to T1.w
+     arrow from CR.e right linerad then down even with T2 then to T2.w
+     line from T2.e right linerad then up even with TGR \
+        then to arrowht left of TGR.w
+     line from T1.e right even with linerad right of T2.e then up linerad
+     arrow from TGR.e right
+     oval "IF" fit
+     arrow right 2*arrowht
+     oval "NOT" fit
+     arrow 2*arrowht
+ETS: oval "EXISTS" fit
+
+     # IF NOT EXISTS bypass
+Y1:  .5*$h below T2.s  # vertical position of back-arrow
+     arrow from TGR.e right linerad then down even with Y1 then left even with T2
+     arrow from ETS.e right linerad then down even with Y1 \
+        then left even with ETS.w
+     line left even with TGR.w
+
+     # second row
+     arrow left even with first circle then down $h*1.25 then right 2*arrowht
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+TN:  oval "trigger-name" fit
+     arrow
+BEF: oval "BEFORE" fit
+AFT: oval "AFTER" fit with .w at 1.25*$h below BEF.w
+IND: oval "INSTEAD" fit with .w at 1.25*$h below AFT.w
+     arrow right 2*arrowht
+OF:  oval "OF" fit
+     arrow from TN.e right linerad then down even with AFT then to AFT.w
+     arrow from TN.e right linerad then down even with IND then to IND.w
+
+     # schema-name bypass
+     arrow from (first circle,SN.n) down even with $h below SN \
+       then right even with SN
+     line right even with arrowht right of DOT.e then up even with DOT \
+        then right linerad
+
+     # Loop back from trigger-name
+Y2:  1.25*$h below IND
+L2:  arrow from (linerad right of TN.e,IND.n) then down even with Y2 \
+       then left even with DOT
+
+     # Exits from the trigger firing times down to the below trigger-namem loopback
+A10: arrow from OF.e right 2*arrowht
+     arrow right linerad then down even with Y2 then left even with IND
+     line left even with TN.e
+     arrow from BEF.e right even with A10.end
+     line right linerad then down even with IND.s     
+     arrow from AFT.e right even with A10.end
+     line right linerad then down linerad
+
+     # Third line
+DEL: oval "DELETE" fit with .w at (SN.w,1.0*$h below Y2)
+INS: oval "INSERT" fit with .w at 1.25*$h below DEL.w
+UPD: oval "UPDATE" fit with .w at 1.25*$h below INS.w
+     arrow from L2.end left even with first circle then down even with UPD \
+       then to UPD.w
+     arrow from (first circle,DEL.n) down even with DEL then to DEL.w
+     arrow from (first circle,INS.n) down even with INS then to INS.w
+
+     # OF sub-clause in UPDATE OF...
+OF2: oval "OF" fit with .w at UPD.e + (linewid,-1*$h)
+     arrow from OF2.e right
+CNL: oval "column-name" fit
+CMA: oval "," bold fit at $h*1.25 below CNL
+
+     # exit from UPDATE OF column_name* then up and add ON table-name
+A20: arrow from CNL.e right
+     arrow right linerad then up even with DEL then right 2*arrowht
+ON:  oval "ON" fit
+     arrow 2*arrowht
+TBL: oval "table-name" fit
+
+     # exit linkage from trigger types to the ON token
+     line from DEL.e to arrowht left of ON.w
+     arrow from INS.e right even with A20.end; line right linerad then up linerad
+     arrow from UPD.e right even with A20.end; line right linerad then up linerad
+     arrow from UPD.e right linerad then down even with OF2 then to OF2.w
+
+     # Loop on the column-name of UPDATE OF
+     arrow from CNL.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht west of CNL.w \
+        then up even with CNL then right linerad
+
+     # Fourth row
+Y3:  1.25*$h below CMA  # height of loop back arrow from third to fourth row
+FOR: oval "FOR" fit with .w at (DEL.w, 1.25*$h below Y3)
+     arrow right 2*arrowht
+     oval "EACH" fit
+     arrow right 2*arrowht
+ROW: oval "ROW" fit
+     arrow 200%
+WHN: oval "WHEN" fit
+     arrow right 2*arrowht
+WEP: box "expr" fit
+
+     # Fifth row
+Y4:  1.25*$h below FOR  # height of loop-back arrow from 3rd/4th row to 5th row
+BGN: oval "BEGIN" fit with .w at (DEL.w,2.25*$h below Y4)
+     arrow 200%
+UST: box "update-stmt" fit
+     arrow 150%
+SMI: oval ";" bold fit
+     arrow
+END: oval "END" fit
+     arrow right even with 2*linerad right of ETS.e
+     circle same     
+IST: box "insert-stmt" fit with .w at 1.25*$h below UST.w
+DST: box "delete-stmt" fit with .w at 1.25*$h below IST.w
+SST: box "select-stmt" fit with .w at 1.25*$h below DST.w
+
+     # Fan-out from BEGIN into the various statement boxes
+     arrow from (2*arrowht+linerad) west of UST.w right linerad \
+       then down even with SST then to SST.w
+     arrow from (2*arrowht west of IST.w,IST.n) down even with IST then to IST.w
+     arrow from (2*arrowht west of DST.w,DST.n) down even with DST then to DST.w
+
+     # Exit arrow from statements back up to the semicolon
+A40: arrow from SST.e right until even with (2*arrowht+linerad) west of SMI.w
+     line right linerad then up even with SMI then to arrowht left of SMI.w
+     arrow from IST.e right even with A40.end; line right linerad then up linerad
+     arrow from DST.e right even with A40.end; line right linerad then up linerad
+
+     # Loop over the semicolon-terminated statements
+     arrow from SMI.e right linerad then up $h then left even with UST
+     arrow left even with arrowht right of BGN.e then down even with BGN \
+        then right 2*arrowht
+
+     # Linkage from table-name all the way down to BEGIN
+     arrow from TBL.e right linerad then down 200%
+     arrow down even with Y3 then left even with UST
+     arrow left even with first circle then down even with BGN then to BGN.w
+
+     # Linkage for the optional FOR EACH ROW and WHEN clauses
+     arrow from (first circle,FOR.n) down even with FOR then to FOR.w
+     arrow from WEP.e right linerad then down even with Y4 \
+        then left even with UST
+     line left even with first circle then down linerad
+     line from ROW.e right linerad then down even with Y4 then left linerad
+     line from WHN.w left 2*linerad then up even with Y3 then right 2*linerad

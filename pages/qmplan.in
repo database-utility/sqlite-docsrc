@@ -1,0 +1,396 @@
+<title>Quality Management</title>
+<table_of_contents>
+
+<h1>Overview</h1>
+
+<p>
+This is the Quality Management Plan for SQLite.
+
+<p>
+Quality management documents tend to expand into
+binders full of incomprehensible jargon that nobody
+reads.  This document strives to break that pattern by
+being concise and useful.
+
+<p>
+The inspiration for this document is
+[https://en.wikipedia.org/wiki/DO-178B|DO-178B].
+Among quality standards, DO-178B seems to have the highest usefulness
+to paperwork ratio.  Even so, the amount of documentation needed
+for a full-up DO-178B implementation is vast.  SQLite strives to be
+nimble and low-ceremony, and to that end, much of the required
+DO-178B documentation is omitted.  We retain only those parts that
+genuinely improve quality for an open-source software project such
+as SQLite.
+
+<p>
+The purpose of this document is to brief the reader on how the
+SQLite development team functions on a daily basis, as they continuously
+enhance the SQLite software and work to improve its already high reliability.
+The document achieves its purpose if a competent developer can be
+assimilated into the development team quickly after perusing this
+document.
+
+<h2>About This Document</h2>
+
+<p>
+The quality management plan was originally composed by going through
+the description of outputs in section 11 of DO-178B (pages 48 through 56)
+and writing down those elements that seemed relevant to SQLite.
+The text will be subsequent revised to track enhancements to the
+SQLite quality process.
+
+<h1>Software Development Plan</h1>
+
+<p>
+This section is a combination of the Plan For Software Aspects Of
+Certification and the Software Development Plan sections of DO-178B.
+
+
+<p>
+See <a href='about.html'>About SQLite</a> for an overview of the
+SQLite software and what it does and how it is different.
+
+<h2>Software Life Cycle</h2>
+
+<p>
+SQLite uses a continuous integration process.  The software
+is under constant enhancement and refinement.  The latest trunk
+check-ins are frequently used internally for mission-critical
+operations. 
+
+<p>
+There is no pre-defined release cycle.  Releases occur
+when there is a critical mass of feature enhancements and/or
+bug fixes.  Historically, releases have occurred about 5 or 6
+times per year.
+Users of SQLite pick up new releases from the website on an
+as-needed basis.
+
+<h3>Maintenance Releases</h3>
+
+<p>
+Routine maintenance releases of SQLite contain feature enhancements,
+performance enhancements, and/or fixes for non-critical issues.
+The version number for major releases are of the form "3.N.0"
+for some integer N.  See the [version numbering conventions] document
+for details.
+
+<p>
+Upcoming maintenance releases announced on the sqlite-users and
+sqlite-dev [mailing lists] about two weeks prior to the anticipated
+release.  Approximately one week prior to release, the lead developer
+declares "pencils down" after which only bug-fix check-ins are
+allowed on trunk.  A new 
+[https://sqlite.org/src/ext/checklist/top/index|release checklist]
+is created and updated as needed.  As items of the checklist are 
+verified, they are checked off and turn green.  The release occurs
+when all elements of the checklist are green.  That process normally
+takes about a week.
+
+<h3>Patch Releases</h3>
+
+<p>
+Occasionally, a serious problem is found and a small "patch" release
+must be made against a regular maintenance release.  Patches are distinct
+from maintenance releases in that the number of lines of code changed
+from the previous release is small.  Every effort is made to avoid
+patch releases by making sure that maintenance releases are bug free.
+
+<p>
+Patch releases may or may not have a release checklist, depending on the
+issue.  This is a judgement call by the project leader.
+
+<h2>Release History</h2>
+
+<p>The documentation system automatically maintains a
+[chronology] of past releases, as well as a
+[complete list of SQLite releases] with change summaries.
+
+<h2>Schedule</h2>
+
+<p>SQLite has a long-range vision.
+Planning is done with the assumption that SQLite
+will be used and supported through at least the year 2050.
+All code is written with the idea that it will one day be read and
+maintained by people not yet born.  The code is carefully commented
+with an eye toward helping those future developers more easily 
+understand the logic and the rationale behind the code.
+
+<h1>Software Development Environment</h1>
+
+<p>
+SQLite is written in portable C code.
+Development work occurs on a mix of Linux, Mac, and Windows workstations.
+The developers use command-line tools and eschew integrated development
+environments (IDEs) whenever possible.  All developers are expected to be
+fluent with the unix command-line.
+
+<p>
+A minimum setup for compiling and testing SQLite from canonical
+sources is as follows:
+
+<ul>
+<li> A host computer with a 32-bit or 64-bit address space.
+     The OS can be Linux, Mac, Windows, *BSD, Solaris, or some other.
+<li> A C99 compiler such as GCC (including MinGW variants for Windows),
+     Clang, or MSVC
+<li> A text editor of the user's choice supporting UTF-8 text.
+<li> [https://core.tcl.tk/|Tcl] version 8.6 or later.
+<li> The "make" utility, or optionally "nmake" on Windows.
+</ul>
+
+<p>
+The Tcl script language is used to help translate canonical source code
+into the [amalgamation] and to manage testing.  Tcl is not used directly
+by SQLite itself (unless requested by a compile-time option).  End users
+of the SQLite amalgamation sources do not need Tcl.
+
+<p>
+When building the [CLI], it is helpful, but not required, to have
+the following third-party libraries on hand:
+
+<ul>
+<li> [https://zlib.net/|zLib]
+<li> [http://git.savannah.gnu.org/cgit/readline.git?h=devel|readline]
+     or [http://thrysoee.dk/editline/|editline]
+     or [https://github.com/antirez/linenoise|linenoise] for
+     command-line editing.
+</ul>
+
+<p>
+A complete release-test of SQLite requires additional software,
+
+<ul>
+<li> [http://www.valgrind.org/|valgrind]
+<li> [https://gcc.gnu.org/onlinedocs/gcc/Gcov.html|gcov]
+</ul>
+
+<p>
+SQLite is expected to operate the same, and use exactly the same 
+[file format|on-disk format],
+on all modern operating systems, on all modern computer architectures,
+and using all modern C compilers.  The developers are constantly testing
+SQLite on as many diverse platforms as they can get their hands on.
+
+<h1>Software Verification Plan</h1>
+
+<p>The testing process for SQLite is described in the [testing] document.
+Testing objectives include:
+
+<ul>
+<li> 100% MC/DC in an as-delivered configuration
+<li> Testing of both source code and object code
+<li> Testing on multiple platforms and with multiple compilers
+<li> Fuzz testing
+<li> Code change inspection
+<li> Dynamic and static analysis of the code
+</ul>
+
+<p>The testing process is controlled by the
+[release testing checklists].  The checklists succinctly summarize
+all steps necessary to fully validate SQLite, and they record when
+and by whom each validation step was performed.
+
+<p>The set of checklist items for release checklist is potentially
+updated for each release.  The content and complete
+history of each release checklist are retained for the historical
+record.
+
+<h1>Software Configuration Management</h1>
+
+<h2>Version Control</h2>
+
+<p>
+SQLite source code is managed using the [https://fossil-scm.org|Fossil]
+version control system.  Fossil was written specifically to support
+SQLite development.  Fossil provides both distributed version control
+and issue tracking.
+
+<h2>Survivability</h2>
+
+<p>
+All code is archived on three separate machines:
+[https://www.sqlite.org], [https://www2.sqlite.org], [https://www3.sqlite.org].
+These machines are located in different cities (Dallas, Newark, and
+San Francisco, respectively) and managed by two different hosting
+companies ([https://linode.com|Linode] for the first two and
+[https://digitalocean.com|Digital Ocean] for the third).
+This diversity is intended to avoid a single point of failure.
+
+<p>
+The main machine in Dallas [https://www.sqlite.org/] is the primary
+server and the one that most people use.  The other two are considered
+backups.
+
+<p>
+In addition to the official repositories, the developers typically
+keep complete clones of all software on their personal machines.
+And there are other clones scattered about the internet.
+
+<h2>Repositories</h2>
+
+<p>The SQLite source is broken up into multiple repositories, each described
+in a separate section below.
+
+<h3>SQLite Source Code</h3>
+
+<p>The SQLite source code and the [TCL test suite] are stored together
+in a single repository.  This one repository is all that is required to
+build the SQLite.  The source repository is public and is
+readable by anonymous passersby on the internet.
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/src]
+<li> Backup A: [https://www2.sqlite.org/src]
+<li> Backup B: [https://www3.sqlite.org/cgi/src]
+<li> GitHub mirror: [https://github.com/sqlite/sqlite/]
+</ul>
+
+<h3>SQLite Documentation Sources</h3>
+
+<p>The documentation sources include documentation text and images with the
+scripts and makefile needed to construct the SQLite website documentation.
+This document is contained within the documentation sources.  The
+document sources are kept in a separate repository distinct from the
+source code.  The documentation sources repository is publicly readable.
+
+<p>The makefiles and scripts used to generate the documentation gather
+text from baseline documents in the documentation source repository.
+Additional text is extracted from comments in the SQLite source code.
+Requirements coverage information is extracted from special comments in the
+[TCL test suite] which is part of the source repository, and from
+comments in the [TH3] test suite which is in a separate private repository.
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/docsrc]
+<li> Backup A: [https://www2.sqlite.org/docsrc]
+<li> Backup B: [https://www3.sqlite.org/cgi/docsrc]
+</ul>
+
+<h3>SQL Logic Test</h3>
+
+<p>
+The [SQL Logic Tests] are a set of test cases designed to show that
+SQLite behaves the same as other SQL database engines.  These tests
+are hosted in a separate code public repository.
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/sqllogictest]
+<li> Backups on private servers
+</ul>
+
+<h3>Test Harness #3</h3>
+
+<p>
+The [TH3|Test Harness #3] or [TH3] test suite is a private set of
+test cases used to test SQLite to 100% MC/DC in an as-delivered
+configuration.  TH3 sources are served on the same servers as the
+other SQLite repositories, but differ from the others in being
+proprietary.  The TH3 code is only accessible to SQLite developers.
+
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/th3]
+<li> Backup A: [https://www3.sqlite.org/cgi/th3]
+<li> Additional backups on private servers
+</ul>
+
+<h3>Dbsqlfuzz</h3>
+
+<p>
+The dbsqlfuzz module is a 
+[https://www.llvm.org/docs/LibFuzzer.html|libFuzzer]-based fuzzer
+for SQLite.  Dbsqlfuzz fuzzes both the SQL and the database file at
+the same time.  Dbsqlfuzz uses a customized mutator.
+
+<p>
+Dbsqlfuzz seems to work better at finding problems than any other
+fuzzer available.  For that reason, it is kept private.  We do not
+want hacker gaining access to this technology.
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/dbsqlfuzz]
+<li> Backup A: [https://www3.sqlite.org/cgi/dbsqlfuzz]
+<li> Additional backups on private servers
+</ul>
+
+<h2>Software Verification Results</h2>
+
+<p>
+Release testing proceeds by [checklist].  The current status and
+complete change history for each checklist is stored in a separate
+SQLite database file.  These files are not version controlled, but
+separate copies are maintained on private backup servers.
+
+<p>The source code to the software that runs the checklists is stored
+in its own Fossil repository at [https://www.sqlite.org/checklistapp].
+
+<h1>Software Requirements Standards And Data</h1>
+
+<p>In the SQLite project, the "requirements" are the project documentation.
+Special markup in the documentation text indentifies individual requirements.
+The requirement numbers are based on a cryptographic hash of normalized
+requirement text, so that it is impossible to change the requirement text
+without also changing the requirement number.
+
+<p>Documentation text (and hence requirement text) is taken from the
+SQLite Documentation source repository, described above, and also from
+comments in the implementation.  The makefiles to build the documentation
+are in the documentation source repository.
+
+<p>When the documentation is build, requirements are identified and labeled.
+The documentation build process also scans for test cases that verify
+each requirement and constructs a matrix showing which requirements have
+been testing and identifying the specific test cases that test those
+requirements.
+
+<h1>Software Design And Coding Standards</h1>
+
+<p>Objective coding standards for SQLite are minimal:
+
+<ul>
+<li> 2-space indentation
+<li> No lines over 80 characters in length
+<li> No tabs
+</ul>
+
+<p>All other design and coding rules are subjective.  The
+goal here is to make the software so that it is readable
+and maintainable through the year 2050.  To that end, we look
+for succinct yet useful comments (no boilerplate), carefully
+chosen variable names, and careful explanation of the meaning
+of each data structure and the role of each code block.
+
+<h1>Problem Reports</h1>
+
+<p>All problems are fixed expeditiously.  There are no lingering problems
+in the sQLite software.
+
+<p>The [https://fossil-scm.org/|Fossil version control system] utilized by
+SQLite contains built-in support for tracking trouble-tickets.  This built-in
+ticket system is used to track and document many historical problems.
+
+<p>The [https://fossil-scm.org/forum|SQLite Community Forum] is a place
+where anybody on the internet can go to ask questions about or report bugs
+against SQLite.  Bugs found by third-parties are often reported initially
+on the Forum.  Forum-reported bugs will sometimes be transferred to tickets,
+though recent practice as been to just deal with the bugs on the Forum.
+The Forum has an excellent full-text search feature, is mirrored to
+multiple machines, and is just as searchable and survivable as the ticket
+system, so it seems unnecessary to duplicate Forum-originated bug reports
+into the ticket system.  The public locations of the Forum are:
+
+<ul>
+<li> Primary location: [https://www.sqlite.org/forum]
+<li> Backup A: [https://www2.sqlite.org/forum]
+<li> Backup B: [https://www3.sqlite.org/cgi/forum]
+</ul>
+
+<p>
+As with the source repositories, the Forum is also synced to various
+private machines.
+Note that because of the way Fossil works, the "backups" are more than just
+read-only backups.  They can also function as data inputs.  All content
+entered is synced to all repositories, regardless of which repository is
+used for insertion.

@@ -1,0 +1,183 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+
+     # Draw the optional WITH prefix
+     arrow
+WTH: oval "WITH" fit
+RSV: oval "RECURSIVE" fit with .w at WTH.e + (1.25*linewid,-1.0*WTH.ht)
+     arrow from WTH.e right even with RSV
+     arrow right even with RSV.e+(2.5*linewid,0)
+CTE: box "common-table-expression" fit
+
+     # Link in the RECURSIVE bubble
+     arrow from WTH.e right linerad then down even with RSV then to RSV.w
+     arrow from RSV.e right 2*arrowht
+     line right linerad then up even with WTH then to arrowht left of CTE.w
+
+     # CTE loop back
+C1:  oval "," bold fit at WTH.ht*1.25 below CTE
+     arrow from CTE.e right linerad then down even with C1 then to C1.e
+     line from C1.w right even with 2*arrowht west of CTE.w \
+        then up even with CTE then to arrowht west of CTE.w
+
+     # Arrow from end of CTE half way back toward the left margin
+CEX: arrow from CTE.e right linerad then down 2.2*$h \
+        then left even with .5<C0,CTE.e>
+
+     arrow from C0.e right linerad then down linewid
+X0:  previous.end
+
+     # The stack of INSERT keywords
+     right
+RPL: oval "REPLACE" fit with .w at 3*1.25*$h below WTH.w
+INS: oval "INSERT" fit with .w at 1.25*$h below previous.w
+     arrow right linerad then down $h then right linerad+arrowht
+OR:  oval "OR" fit
+     arrow right linerad then down 5.0*$h then right linerad+arrowht
+RBK: oval "ROLLBACK" fit
+     arrow right 1.5*arrowht
+X2:  previous.end
+     arrow right linerad then up even with RPL then right linerad+arrowht
+ITO: oval "INTO" fit
+
+     # Connect inputs to REPLACE and INSERT
+     arrow from X0 down even with INS then to INS.w
+     arrow from (X0,RPL.n) down even with RPL then to RPL.w
+     line from CEX.end left even with X0 then down linerad
+
+     # Fill in all the other keywords and connect them into INTO
+     line from RPL.e to arrowht left of ITO.w
+     arrow from INS.e right even with X2; line right linerad then up linerad
+     oval "ABORT" fit with .w at (RBK.w,OR)
+     arrow from OR.e to last oval.w
+     arrow from last oval.e right even with X2; line right linerad then up linerad
+     oval "FAIL" fit with .w at (RBK.w.x,last oval.y-1.25*$h)
+     arrow from (OR.e.x+linerad,last oval.n.y) down even with last oval \
+        then to last oval.w
+     arrow from last oval.e right even with X2; line right linerad then up linerad
+     oval "IGNORE" fit with .w at (RBK.w.x,last oval.y-1.25*$h)
+     arrow from (OR.e.x+linerad,last oval.n.y) down even with last oval \
+        then to last oval.w
+     arrow from last oval.e right even with X2; line right linerad then up linerad
+     oval "REPLACE" fit with .w at (RBK.w.x,last oval.y-1.25*$h)
+     arrow from (OR.e.x+linerad,last oval.n.y) down even with last oval \
+        then to last oval.w
+     arrow from last oval.e right even with X2; line right linerad then up linerad
+
+     # Construct the boxes of the schema-name line
+Y2:  1.5*$h below RBK
+     right
+SN:  oval "schema-name" fit with .w at (WTH.w,1.5*$h below Y2)
+     arrow 2*arrowht
+     oval "." bold fit
+     arrow
+TN:  oval "table-name" fit
+     arrow
+AS:  oval "AS" fit
+     arrow 2*arrowht
+ALS: oval "alias" fit
+
+     # line from INTO into either schema-name or table-name
+     arrow from INTO.e right linerad then down 3*linewid
+     arrow down even with Y2 then left even with SN.e
+     arrow left even with linerad right of C0  then down even with SN then to SN.w
+     arrow from (TN.w,Y2) left linerad+arrowht then down .75*$h + 0.5*arrowht
+     line down even with TN then right linerad
+
+     # Construct the column-list row
+Y3:  1.5*$h below SN
+     right
+LP1: oval "(" bold fit with .w at (SN.w,1.5*$h below Y3)
+     arrow
+CN:  oval "column-name" fit
+     arrow
+RP1: oval ")" bold fit
+
+     # column-name loop
+CMA: oval "," bold fit at 1.125*$h below CN
+     arrow from CN.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with linerad+arrowht west of CN.w \
+        then up even with CN then right linerad
+
+     # column-name output
+     arrow from RP1.e right linerad \
+         then down even with $h below CMA \
+         then left even with CMA
+     line left even with X0 then down linerad
+
+     # Connect the table-name and alias into the column list
+     arrow from ALS.e right linerad then down even with Y3 \
+       then left even with AS.e
+     arrow left even with X0 then down even with LP1 then to LP1.w
+     arrow from TN.e right linerad then down .75*$h + 0.5*arrowht
+     line down even with Y3 then left linerad
+
+     # Construct the VALUES row
+Y4:  1.5*$h below CMA
+     right
+VAL: oval "VALUES" fit with .w at (LP1.w,1.5*$h below Y4)
+     arrow
+LP2: oval "(" bold fit
+     arrow
+E1:  box "expr" fit
+     arrow
+RP2: oval ")" bold fit
+     arrow from (X0,LP1.n) down even with VAL then to VAL.w
+
+     # Expr loop
+C2:  oval "," bold fit at 1.125*$h below E1
+     arrow from E1.e right linerad then down even with C2 then to C2.e
+     line from C2.w left even with linerad+arrowht west of E1.w \
+        then up even with E1 then right linerad
+
+     # the VALUES row loop
+C3:  oval "," bold fit at 1.25*$h below C2
+     arrow from RP2.e right linerad then down even with C3 then to C3.e
+     line from C3.w left even with linerad+arrowht west of LP2.w \
+        then up even with LP2 then right linerad
+
+     # upsert-clause option for VALUES
+     arrow from RP2.e right linerad then down 1.25*$h then right linerad+arrowht
+US1: box "upsert-clause" fit
+     arrow 2*arrowht
+OUT: previous.end
+     line right linerad then down linerad
+
+     # upsert-clause bypass for VALUES
+A3:  arrow from RP2.e right even with OUT
+
+     # Construct the select-stmt row
+SEL: box "select-stmt" fit with .w at (VAL.w,1.5*$h below C3)
+     arrow right even with OUT; line right linerad then down linerad
+     arrow from (X0,VAL.n) down even with SEL then to SEL.w
+
+     # upsert-clause option for select-stmt
+     right
+US2: box "upsert-clause" fit with .w at (US1.w,$h below SEL)
+     arrow right even with OUT; line right linerad then down linerad
+     arrow from (2*linerad+arrowht west of US2.w,SEL) right linerad \
+       then down even with US2 then to US2.w
+
+     # Construct the DEFAULT VALUES row
+     right
+DFV: oval "DEFAULT" fit with .w at (SEL.w,1.25*$h below US2)
+     arrow 2*arrowht
+     oval "VALUES" fit
+A4:  arrow right even with OUT
+     arrow from (X0,SEL.n) down even with DFV then to DFV.w
+
+     # The returning-clause
+RC:  box "returning-clause" fit with .e at 3.35*$h below US2.e    
+     arrow from RC.e right even with 3*linerad+arrowht east of OUT
+     circle same
+
+     line from A3.end right linerad then down even with last circle \
+        then right linerad
+     arrow from A4.end right linerad then down even with 1.1*$h above RC \
+        then left even with RC
+     arrow left even with linerad+arrowht west of RC.w \
+        then down even with RC then to RC.w

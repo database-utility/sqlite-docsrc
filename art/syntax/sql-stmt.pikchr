@@ -1,0 +1,134 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+     oval "EXPLAIN" fit
+     arrow
+     oval "QUERY" fit
+     arrow 1.5*arrowht
+     oval "PLAN" fit
+     arrow right linerad then up even with C0 then right linerad+arrowht
+X1:  previous.end
+X2:  linerad right of X1
+
+     arrow from EXPLAIN.e right linerad then up even with C0 \
+         then right linerad+arrowht
+     line to arrowht west of X1
+     line from C0.e right even with 2*linerad east of EXPLAIN.e
+
+     arrow from X1 right 2*linerad+arrowht
+     box "alter-table-stmt" fit
+     arrow right 2cm
+X3:  previous.end
+     arrow right 2*linerad+arrowht
+     circle same
+
+     $spacing = 1.25*$h
+     box "analyze-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "attach-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "begin-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "commit-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "create-index-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "create-table-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "create-trigger-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "create-view-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "create-virtual-table-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "delete-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "delete-stmt-limited" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "detach-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "drop-index-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "drop-table-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "drop-trigger-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "drop-view-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "insert-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "pragma-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "reindex-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "release-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "rollback-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "savepoint-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "select-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "update-stmt" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "update-stmt-limited" fit with .w at $spacing below last box.w
+     arrow from (X2,last box.t) down even with last box then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up linerad
+     box "vacuum-stmt" fit with .w at $spacing below last box.w
+     arrow from X1 right linerad then down even with last box \
+        then to last box.w
+     arrow from last box.e right even with X3
+     line right linerad then up even with X3 then right linerad

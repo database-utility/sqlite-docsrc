@@ -1,0 +1,23 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+     arrow
+CMT: oval "COMMIT" fit
+A1:  arrow 125%
+A2:  line
+TXN: oval "TRANSACTION" fit
+     arrow 125%
+     circle same
+
+     # END option
+EN:  oval "END" fit with .w at 1.25*CMT.ht south of CMT.w
+     arrow from A0.end right linerad then down even with EN then to EN.w
+     arrow from EN.e right even with CMT.e
+     line right linerad then up even with CMT then right linerad
+
+     # TRANSACTION bypass
+     arrow from A1.end right linerad then down CMT.ht then right even with TXN
+     line right even with TXN.e+(linerad,0) then up even with TXN \
+        then right linerad

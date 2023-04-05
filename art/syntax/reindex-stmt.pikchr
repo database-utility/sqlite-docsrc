@@ -1,0 +1,40 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+RIX: oval "REINDEX" fit
+Y1:  .9*$h below C0
+Y2:  1.25*$h below Y1
+     arrow right linerad then down even with Y2 then right linerad+arrowht
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+X1:  previous.end
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+     oval "index-name" fit
+     arrow 3*arrowht
+X2:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+C99: circle same
+
+     right
+     arrow from X1 right 2*linerad+arrowht
+     oval "table-name" fit
+     arrow right even with X2; line right linerad then up linerad
+
+     arrow from RIX.e right even with X1; line to arrowht left of C99.w
+
+     arrow from RIX.e right linerad then down even with Y1 \
+        then right linerad+arrowht
+     oval "collation-name" fit
+     arrow right even with X2; line right linerad then up linerad
+
+     # Schema-name bypass
+     arrow from (linerad right of RIX.e,SN.n) down even with X2 \
+        then right even with SN
+     line right even with linerad right of DOT.e \
+        then up even with DOT then right linerad

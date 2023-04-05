@@ -1,0 +1,150 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+A1:  arrow right linerad then down 2*arrowht
+
+     # The CONSTRAINT name option
+     arrow right from A0.end
+CX:  oval "CONSTRAINT" fit
+     arrow 2*arrowht
+     oval "name" fit
+     arrow right then down CX.ht then left even with .5<CX.w,last oval.e> 
+     line right even with A1.end then down linerad
+
+     # main PRIMARY KEY line
+     arrow from A1.end down even with 2.0*CX.ht below CX then right 2*arrowht
+PK:  oval "PRIMARY" fit
+     arrow 2*arrowht
+KEY: oval "KEY" fit
+     arrow right linerad then down 2*CX.ht then right 2*arrowht
+     oval "DESC" fit
+A12: arrow right 2*arrowht
+     arrow right linerad then up even with PK then right 2*arrowht
+CFC: box "conflict-clause" fit
+A10: arrow right 2*arrowht
+     arrow right linerad then down 1*CX.ht then right 2*arrowht
+AI:  oval "AUTOINCREMENT" fit
+     arrow right 2*arrowht
+     arrow right linerad then up even with PK then right
+UP:  previous.start + (linerad, linerad)
+     circle same
+
+     # AUTOINCREMENT bypass
+     arrow from A10.end right even with AI
+     line to arrowht left of last circle
+
+     # ASC and bypass
+     arrow from KEY.e right even with DESC
+     line to arrowht left of CFC.w
+     arrow from KEY.e right linerad then down .75*CX.ht then right 2*arrowht
+     oval "ASC" fit
+     arrow right even with A12.end
+     line right linerad then up linerad
+
+     # The NOT NULL line
+     arrow from (A1.end,PK.n) down even with 5.5*CX.ht below CX \
+        then right 2*arrowht
+NN:  oval "NOT" fit
+     arrow 2*arrowht
+     oval "NULL" fit
+     arrow 2*arrowht
+     box "conflict-clause" fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with AI.n
+
+     # The UNIQUE line
+     arrow from (A1.end,NN.n) down even with 1.25*CX.ht below NN \
+        then right 2*arrowht
+UNQ: oval "UNIQUE" fit
+     arrow 2*arrowht
+     box "conflict-clause" fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with NN.n
+
+     # The CHECK line
+     arrow from (A1.end,UNQ.n) down even with 1.25*CX.ht below UNQ \
+        then right 2*arrowht
+CK:  oval "CHECK" fit
+     arrow 2*arrowht
+     oval "(" bold fit
+     arrow 2*arrowht
+     box "expr" fit
+     arrow 2*arrowht
+     oval ")" bold fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with UNQ.n
+
+     # The DEFAULT line
+     arrow from (A1.end,CK.n) down even with 1.25*CX.ht below CK \
+        then right 2*arrowht
+DEF: oval "DEFAULT" fit
+A21: arrow 2*arrowht
+     arrow
+     oval "(" bold fit
+     arrow 2*arrowht
+     box "expr" fit
+     arrow 2*arrowht
+RP2: oval ")" bold fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with CK.n
+     # literal-value option
+     arrow from A21.end right linerad then down 1.25*CX.ht then right 2*arrowht
+     box "literal-value" fit
+     arrow 2*arrowht
+     line right even with 2*linerad right of RP2.e then up even with RP2 then right
+     # signed-number option
+     arrow from A21.end right linerad then down 2.5*CX.ht then right 2*arrowht
+     box "signed-number" fit
+     arrow 2*arrowht
+     line right even with 2*linerad right of RP2.e then up even with RP2 then right
+
+     # The COLLATE line
+     arrow from (A1.end,DEF.n) down even with 3.75*CX.ht below DEF \
+        then right 2*arrowht
+CLL: oval "COLLATE" fit
+     arrow 2*arrowht
+     oval "collation-name" fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with DEF.n
+
+     # The foreign-key-clause line
+     arrow from (A1.end,CLL.n) down even with 1.25*CX.ht below CLL \
+        then right 2*arrowht
+FK:  box "foreign-key-clause" fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with CLL.n
+
+     # The GENERATED ALWAYS line
+     arrow from (A1.end,FK.n) down even with 1.25*CX.ht below FK \
+        then right 2*arrowht
+GEN: oval "GENERATED" fit
+     arrow 2*arrowht
+ALW: oval "ALWAYS" fit
+     arrow
+     oval "AS" fit
+     arrow 2*arrowht
+     oval "(" bold fit
+     arrow 2*arrowht
+     box "expr" fit
+     arrow 2*arrowht
+RP3: oval ")" bold fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with FK.n
+
+     # Bypass off GENERATED ALWAYS - straight to "AS"
+     arrow from (A1.end,GEN.n) down even with 1.0*CX.ht below GEN \
+        then right even with .5<GEN.w,ALW.e>
+     line right even with ALW.e+(arrowht,0) then up even with ALW \
+        then right linerad
+     
+     # The STORED and VIRTUAL keyword on a generated column
+     arrow from RP3.e right 2*arrowht then down 2.5*CX.ht then right 2*arrowht
+     oval "VIRTUAL" fit
+     arrow right even with linerad west of UP
+     line right linerad then up even with GEN.n
+     arrow from RP3.e right 2*arrowht then down 1.25*CX.ht then right 2*arrowht
+     oval "STORED" fit
+     arrow right even with linerad west of UP
+     line right linerad then up linerad

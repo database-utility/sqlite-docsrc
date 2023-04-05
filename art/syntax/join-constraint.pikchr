@@ -1,0 +1,38 @@
+    linerad = 10px
+    linewid *= 0.5 
+    $h = 0.21
+
+C0: circle radius 10%
+
+    # Longest path through the USING choice
+    arrow right linerad then down 1.25*$h then right linerad+arrowht
+US: oval "USING" fit
+    arrow 2*arrowht
+    oval "(" bold fit
+    arrow
+CN: oval "column-name" fit
+    arrow
+    oval ")" bold fit
+    arrow 2*arrowht
+X9: previous.end
+    arrow right linerad then up even with C0 then right
+    circle same
+
+    # Loop over column-name
+CMA: oval "," bold fit at 1.25*$h below CN
+    arrow from CN.e right linerad then down even with CMA then to CMA.e
+    line from CMA.w right even with  linerad+arrowht left of CN.w \
+       then up even with CN then right linerad
+
+    # The ON choice
+    arrow from C0.e right even with US.w
+    oval "ON" fit
+    arrow 2*arrowht
+    box "expr" fit
+    arrow right even with X9
+    line to arrowht west of last circle.w
+
+    # Bypass everything
+    arrow from C0.e right linerad then down even with .9*$h below CMA \
+       then right even with CN.w
+    line right even with linerad right of X9 then up even with CN.n

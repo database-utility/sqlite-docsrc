@@ -1,0 +1,35 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+RBK: oval "ROLLBACK" fit
+     arrow
+TXN: oval "TRANSACTION" fit
+     arrow 200%
+TO:  oval "TO" fit
+     arrow
+SVP: oval "SAVEPOINT" fit
+     arrow
+SN:  oval "savepoint-name" fit
+     arrow
+C99: circle same
+
+     # SAVEPOINT bypass
+     arrow from TO.e right linerad \
+        then up .9*$h then right even with SVP
+     line right even with linerad right of SVP.e then down even with SVP \
+        then right linerad
+
+     # TO SAVEPOINT name bypass
+     arrow from linerad+2*arrowht west of TO.w right linerad \
+        then down .9*$h then right even with SVP
+     line right even with linerad east of SN.e then up even with SN \
+        then right linerad
+
+     # TRANSACTION bypass
+     arrow from RBK.e right linerad then down .9*$h then right even with TXN
+     line right even with linerad east of TXN.e then down even with TXN \
+        then right linerad

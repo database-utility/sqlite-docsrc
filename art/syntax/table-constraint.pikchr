@@ -1,0 +1,76 @@
+      linerad = 10px
+      linewid *= 0.5 
+      $h = 0.21
+      # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:   circle radius 10%
+X1:   linerad right of C0.e
+      arrow
+      oval "CONSTRAINT" fit
+      arrow 2*arrowht
+NAME: oval "name" fit
+
+      oval "PRIMARY" fit with .w at 2.5*$h below CONSTRAINT.w
+      arrow 2*arrowht
+      oval "KEY" fit
+      arrow
+LP1:  oval "(" bold fit
+      arrow
+IC:   box "indexed-column" fit
+      arrow
+RP1:  oval ")" bold fit
+      arrow 2*arrowht
+      box "conflict-clause" fit
+      arrow 2*arrowht
+X3:   previous.e
+      arrow 2*linerad+arrowht
+      circle same
+
+      arrow from C0.e right even with X1 then down even with PRIMARY \
+         then to PRIMARY.w
+      arrow from NAME.e right linerad then down 1.25*$h \
+         then left even with CONSTRAINT
+      line left even with X1 then down linerad
+
+CMA1: oval "," bold fit at 1.25*$h below IC
+      arrow from IC.e right linerad then down even with CMA1 then to CMA1.e
+      line from CMA1.w left even with linerad+arrowht west of IC.w \
+         then up even with IC then right linerad
+      
+      oval "UNIQUE" fit with .w at 1.25*$h below PRIMARY.w
+      line right even with linerad east of KEY.e then up even with KEY \
+         then right linerad
+      arrow from (X1,PRIMARY.n) down even with UNIQUE then to UNIQUE.w
+
+      right
+      oval "CHECK" fit with .w at 1.25*$h below UNIQUE.w
+      arrow 2*arrowht
+      oval "(" bold fit
+      arrow same
+      box "expr" fit
+      arrow same
+      oval ")" bold fit
+      arrow right even with X3
+      line right linerad then up even with X3 then right linerad
+      arrow from (X1,UNIQUE.n) down even with CHECK then to CHECK.w
+
+      right
+      oval "FOREIGN" fit with .w at 1.25*$h below CHECK.w
+      arrow 2*arrowht
+      oval "KEY" fit
+      arrow same
+      oval "(" bold fit
+      arrow
+CN:   oval "column-name" fit
+      arrow
+      oval ")" bold fit
+      arrow 2*arrowht
+      box "foreign-key-clause" fit
+      arrow right even with X3
+      line right linerad then up even with CHECK.n
+      arrow from (X1,CHECK.n) down even with FOREIGN then to FOREIGN.w
+
+CMA2: oval "," bold fit at 1.25*$h below CN
+      arrow from CN.e right linerad then down even with CMA2 then to CMA2.e
+      line from CMA2.w left even with linerad+arrowht west of CN.w \
+          then up even with CN then right linerad

@@ -1,0 +1,78 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 150%
+D1:  oval "digit" fit
+     arrow right linerad then up $h then left even with D1
+     line left even with linerad+arrowht left of D1.w then down even with D1 \
+       then right linerad
+
+     arrow from D1.e right linewid then down $h then right linerad+arrowht
+DP1: oval "." bold fit
+     arrow right linewid+0.5*D1.width
+X1:  previous.end
+     arrow right linewid+0.5*D1.width+arrowht
+X2:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+C1:  previous.end
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+     oval "E" bold fit
+     arrow right 2*linerad + arrowht
+X3:  previous.end
+     arrow from C1 right linerad then down 2.5*$h then right linerad+arrowht
+     oval "e" bold fit
+     line right linerad then up even with 2nd last oval then right linerad
+
+D2:  oval "digit" fit at 1.0*$h below X1
+     arrow from X1 right even with linerad+arrowht east of D2.e \
+        then down even with D2 \
+        then to D2.e
+     line from D2.w left linerad then up even with X1 then right linerad
+
+     arrow from D1.e right even with X1; line to arrowht left of C1
+
+     arrow from C0.e right linerad then down even with 1.25*$h below D2 \
+        then right linerad+arrowht
+     oval "." bold fit
+     arrow
+D3:  oval "digit" fit
+     arrow right even with X2; line right linerad then up even with DP1.n
+
+     arrow from D3.e right linerad then up $h then left even with D3
+     line left even with linerad+arrowht west of D3.w then down even with D3 \
+        then right linerad
+
+     arrow from X3 right linerad then down 2.25*$h then right linerad+arrowht
+     oval "-" bold fit
+     arrow right linerad then up even with X3 then right linewid*1.3
+D4:  oval "digit" fit
+     arrow right linewid
+X4:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+     circle same
+
+     arrow from X3 right linerad then down 1.0*$h then right linerad+arrowht
+PLS: oval "+" bold fit
+     line right linerad then up linerad
+
+     arrow from C1 right even with PLS; line to arrowht left of last circle.w
+
+     arrow from X3 right even with PLS; line to arrowht left of D4.w
+
+     arrow from D4.e right linerad then up 0.8*$h then left even with D4
+     line left even with linerad+arrowht left of D4.w then down even with D4 \
+       then right linerad
+
+     arrow from C0.e right linerad then down even with 1.5*$h below D3 \
+       then right linerad+arrowht
+     oval "0x" bold fit
+     arrow right
+D5:  oval "hexdigit" fit
+     arrow right even with X4; line right linerad then up even with D4.n
+
+     arrow from D5.e right linerad then down 0.9*$h then left even with D5
+     line left even with linerad+arrowht west of D5.w \
+         then up even with D5 then right linerad

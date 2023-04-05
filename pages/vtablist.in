@@ -1,0 +1,429 @@
+<title>List Of Virtual Tables</title>
+
+<tcl>hd_keywords {virtual table list} {list of virtual tables}</tcl>
+
+<table_of_contents>
+
+<h1>Introduction</h1>
+
+<p>A [virtual table] is an object that presents an SQL table
+interface but which is not stored in the database file, at least
+not directly.  The virtual table mechanism is a feature
+of SQLite that allows SQLite to access and manipulate resources
+other than bits in the database file using the powerful SQL
+query language.
+
+<p>
+The table below lists a few of the virtual tables implementations
+available for SQLite.  Developers can deploy these virtual tables
+in their own applications, or use the implementations shown below
+as templates for writing their own virtual tables.
+
+<p>
+The list below is not exhaustive.
+Other virtual table implementation exist in the SQLite source tree
+and elsewhere.
+The list below tries to capture the more interesting virtual table
+implementations.
+
+<tcl>
+unset -nocomplain vtab
+set vtab(sqlite_dbpage) {
+  ifdef      SQLITE_ENABLE_DBPAGE_VTAB
+  type       eponymous
+  rw         1
+  src        src/dbpage.c
+  doc        *sqlite_dbpage
+  supported  1
+  synopsis   {
+    Key/value store for the raw database file content.  The key is the
+    page number and the value is binary page content.
+  }
+}
+set vtab(dbstat) {
+  ifdef      SQLITE_ENABLE_DBSTAT_VTAB
+  type       eponymous
+  rw         0
+  src        src/dbstat.c
+  doc        *dbstat
+  supported  1
+  synopsis   {
+    Provides information about the purpose and use of each page in a
+    database file.  Used in the implementation of the
+    [sqlite3_analyzer] utility program.
+  }
+}
+set vtab(bytecode) {
+  ifdef      SQLITE_ENABLE_BYTECODE_VTAB
+  type       eponymous
+  rw         0
+  src        src/vdbevtab.c
+  doc        *bcvtab
+  supported  1
+  synopsis   {
+    A [table-valued function] that shows the bytecodes of a prepared
+    statement.
+  }
+}
+set vtab(tables_used) {
+  ifdef      SQLITE_ENABLE_BYTECODE_VTAB
+  type       eponymous
+  rw         0
+  src        src/vdbevtab.c
+  doc        *bcvtab
+  supported  1
+  synopsis   {
+    A [table-valued function] that shows the tables and indexes that
+    are accessed by a prepared statement.
+  }
+}
+set vtab(sqlite_memstat) {
+  ifdef      {}
+  type       eponymous
+  rw         0
+  src        ext/misc/memstat.c
+  doc        *sqlite_memstat
+  supported  1
+  synopsis   {
+    Provides SQL access to the [sqlite3_status64()] and
+    [sqlite3_db_status()] interfaces.
+  }
+}
+set vtab(pragma) {
+  ifdef      builtin
+  type       table-valued-function
+  src        src/pragma.c
+  doc        {*PRAGMA functions}
+  supported  1
+  synopsis   {
+    Built-in [table-valued functions] that return the results of [PRAGMA]
+    statements for use within ordinary SQL queries.
+  }
+}
+set vtab(templatevtab) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/templatevtab.c
+  doc        {}
+  supported  1
+  synopsis   {
+    A template virtual table implementation useful as a starting point
+    for developers who want to write their own virtual tables
+  }
+}
+set vtab(RTree) {
+  ifdef      SQLITE_ENABLE_RTREE
+  type       regular
+  src        ext/rtree/
+  doc        *R-Trees
+  supported  1
+  synopsis   {
+    An implementation of the Guttmann R*Tree spatial index idea.
+  }
+}
+set vtab(FTS3) {
+  ifdef      SQLITE_ENABLE_FTS3
+  type       regular
+  src        ext/fts3/
+  doc        {*full-text search}
+  supported  1
+  synopsis   {
+    A high-performance full-text search index.
+  }
+}
+set vtab(FTS5) {
+  ifdef      SQLITE_ENABLE_FTS5
+  type       regular
+  src        ext/fts5/
+  doc        {*FTS5}
+  supported  1
+  synopsis   {
+    A higher-performance full-text search index
+  }
+}
+set vtab(approximate_match) {
+  ifdef      experimental
+  type       regular
+  src        ext/misc/amatch.c
+  doc        {}
+  supported  0
+  synopsis   {
+    A demonstration of how to use a virtual table to implement
+    approximate string matching.
+  }
+}
+set vtab(sqlite_btreeinfo) {
+  ifdef      experimental
+  type       table-valued-function
+  src        ext/misc/btreeinfo.c
+  doc        {}
+  supported  0
+  synopsis   {
+    This experimental [table-valued function] provides information about
+    a single [B-tree] in a database file, such as the depth, and estimated
+    number of pages and number of entries, and so forth.
+  }
+}
+set vtab(carray) {
+  ifdef      {}
+  type       table-valued-function
+  src        ext/misc/carray.c
+  doc        *carray
+  supported  1
+  synopsis   {
+    A [table-valued function] that allows a C-language array of integers,
+    doubles, or strings to be used as table in a query.
+  }
+}
+set vtab(closure) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/closure.c
+  doc        {}
+  supported  1
+  synopsis   {
+    Compute the transitive closure of a set.
+  }
+}
+set vtab(completion) {
+  ifdef      {}
+  type       eponymous
+  src        ext/misc/completion.c
+  doc        *COMPLETION
+  supported  1
+  synopsis   {
+    Suggests completions for partially-entered words during interactive
+    SQL input.  Used by the [CLI] to help implement tab-completion.
+  }
+}
+set vtab(csv) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/csv.c
+  doc        *csv
+  supported  1
+  synopsis   {
+    A virtual table that represents a comma-separated-value or CSV file
+    ([https://www.ietf.org/rfc/rfc4180.txt|RFC 4180]) as a read-only
+    table so that it can be used as part of a larger query.
+  }
+}
+set vtab(fsdir) {
+  ifdef      {}
+  type       table-valued-function
+  src        ext/misc/fileio.c
+  doc        {}
+  supported  1
+  synopsis   {
+    A [table-valued function] returning one row for each file in a
+    selected file hierarchy of the host computer.  Used by the
+    [CLI] to help implement the [.archive command].
+  }
+}
+set vtab(json_each) {
+  ifdef      SQLITE_ENABLE_JSON1
+  type       table-valued-function
+  src        ext/misc/json1.c
+  doc        *json_each
+  supported  1
+  synopsis   {
+    A [table-valued function] for decomposing a JSON string.
+  }
+}
+set vtab(json_tree) {
+  ifdef      SQLITE_ENABLE_JSON1
+  type       table-valued-function
+  src        ext/misc/json1.c
+  doc        *json_tree
+  supported  1
+  synopsis   {
+    A [table-valued function] for decomposing a JSON string.
+  }
+}
+set vtab(generate_series) {
+  ifdef      {}
+  type       table-valued-function
+  src        ext/misc/series.c
+  doc        *series
+  supported  1
+  synopsis   {
+    A [table-valued function] returning a sequence of increasing
+    integers, modeled after the table-valued function by the same
+    name in PostgreSQL.
+  }
+}
+set vtab(spellfix1) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/spellfix.c
+  doc        *spellfix1
+  supported  1
+  synopsis   {
+    A virtual table that implements a spelling correction engine.
+  }
+}
+set vtab(sqlite_stmt) {
+  ifdef      {}
+  type       table-valued-function
+  src        ext/misc/stmt.c
+  doc        *sqlite_stmt
+  supported  1
+  synopsis   {
+    A [table-valued function] containing one row for each
+    [prepared statement] associated with an open [database connection].
+  }
+}
+set vtab(unionvtab) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/unionvtab.c
+  doc        *unionvtab
+  supported  1
+  synopsis   {
+    An experimental module providing on-demand read-only access to
+    multiple tables spread across multiple databases, via a single
+    virtual table abstraction.
+  }
+}
+set vtab(swarmvtab) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/unionvtab.c
+  doc        *swarmvtab
+  supported  1
+  synopsis   {
+    An experimental module providing on-demand read-only access to
+    multiple tables spread across multiple databases, via a single
+    virtual table abstraction.
+  }
+}
+set vtab(vfsstat) {
+  ifdef      {}
+  type       table-valued-function
+  src        ext/misc/vfsstat.c
+  doc        {}
+  supported  0
+  synopsis   {
+    A [table-valued function] which, in combination with a
+    co-packaged [VFS shim] provides information on the number of
+    system calls performed by SQLite.
+  }
+}
+set vtab(vtablog) {
+  ifdef      {}
+  type       regular
+  src        ext/misc/vtablog.c
+  doc        {}
+  supported  0
+  synopsis   {
+    A virtual table that prints diagnostic information
+    on stdout when its key methods are invoked.  Intended for
+    interactive analysis and debugging of virtual table interfaces.
+  }
+}
+set vtab(wholenumber) {
+  ifdef      {}
+  type       eponymous
+  src        ext/misc/wholenumber.c
+  doc        {}
+  supported  0
+  synopsis   {
+    A virtual table returns all integers between 1 and 4294967295.
+  }
+}
+set vtab(zipfile) {
+  ifdef      {}
+  type       eponymous
+  src        ext/misc/zipfile.c
+  doc        *zipfile
+  supported  1
+  synopsis   {
+    Represent a
+    [https://en.wikipedia.org/wiki/Zip_(file_format)|ZIP Archive]
+    as an SQL table.  Works for both reading and writing.  Used by
+    the [CLI] to implement the ability to read and write ZIP Archives.
+  }
+}
+set vtab(OsQuery) {
+  ifdef      {}
+  type       eponymous
+  src        https://github.com/facebook/osquery
+  doc        https://osquery.readthedocs.io/en/stable/
+  supported  0
+  synopsis   {
+    Hundreds of virtual tables that publish various aspects of the
+    host computer, such as the process table, user lists, active network
+    connections, and so forth.
+    OsQuery is a separate project, started by Facebook, hosted on
+    [https://github.com/facebook/osquery|GitHub], and intended for
+    security analysis and intrusion detection
+    OsQuery is not a part of the SQLite project, but is included in this
+    list because it demonstrates how the SQL language and the
+    SQLite virtual table mechanism
+    can be leveraged to provide elegant solutions
+    to important real-world problems.
+  }
+}
+set vtab(tclvar) {
+  ifdef      {}
+  type       eponymous
+  src        src/test_tclvar.c
+  doc        {}
+  supported  1
+  synopsis   {
+    Represents the global variables of a 
+    [https://en.wikipedia.org/wiki/Tcl|TCL Interpreter] as an SQL
+    table. Used as part of the SQLite test suite.
+  }
+}
+set vtab(files_of_checkin) {
+  ifdef      {}
+  type       eponymous
+  src        https://fossil-scm.org/fossil/file/src/foci.c
+  doc        https://fossil-scm.org/fossil/file/src/foci.c
+  supported  1
+  synopsis   {
+    Provides information about all files in a single check-in in the
+    [https://fossil-scm.org/|Fossil version control system].  This
+    virtual table is not part of the SQLite project but is included because
+    it provides an example of how to use virtual tables and because it is
+    used to help version control the SQLite sources.
+  }
+}
+</tcl>
+
+<h1>Virtual Tables</h1>
+
+<table striped=1>
+<tr><th>Name</th><th>Description</th></tr>
+<tcl>
+set ii 1
+foreach vtabname [lsort -nocase [array names vtab]] {
+  incr ii
+  set x [dict create {*}$vtab($vtabname)]
+  if {$ii%2} {
+    hd_puts "<tr style=\"text-align:left;\">"
+  } else {
+    hd_puts "<tr style=\"text-align:left;background-color:#DDDDDD;\">"
+  }
+  hd_puts "<td><b>"
+  set doc [dict get $x doc]
+  if {[string index $doc 0]=="*"} {
+    hd_resolve "\[[string range $doc 1 end]|$vtabname\]"
+  } elseif {[string match http* $doc]} {
+    hd_resolve "\[$doc|$vtabname\]"
+  } else {
+    set src [dict get $x src]
+    if {$src!=""} {
+      hd_resolve "\[https://sqlite.org/src/file/$src|$vtabname\]"
+    } else {
+      hd_puts "$vtabname"
+    }
+  }
+  hd_puts "</b></td>\n"
+  hd_puts "<td>"
+  hd_resolve [string trim [dict get $x synopsis]]
+  hd_puts "</td></tr>\n"
+}
+</tcl>
+</table>

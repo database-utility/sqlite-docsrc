@@ -1,0 +1,24 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+     arrow 2*arrowht
+AX:  oval "ATTACH" fit
+A1:  arrow 2*arrowht
+
+     arrow
+DB:  oval "DATABASE" fit
+A2:  arrow
+     box "expr" fit
+     arrow 2*arrowht
+     oval "AS" fit
+     arrow 2*arrowht
+     oval "schema-name" fit
+     arrow 2*arrowht
+     circle radius 10%
+
+     # DATABASE bypass
+     arrow from A1.end right linerad then down 0.8*AX.ht \
+        then right even with DB
+     line right even with .5<A2.start,A2> then up even with A2 \
+        then right linerad

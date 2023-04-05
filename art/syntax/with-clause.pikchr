@@ -1,0 +1,42 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     oval "WITH" fit
+     arrow right linerad then up $h then right linerad+arrowht
+     oval "RECURSIVE" fit
+     line right linerad then down even with WITH then right linerad
+     arrow linerad+arrowht
+CTN: box "cte-table-name" fit
+     arrow 2*arrowht
+     oval "AS" fit
+     arrow right linerad then up 2.25*$h then right linerad+arrowht
+     oval "NOT" fit
+     arrow 1.5*arrowht
+M1:  oval "MATERIALIZED" fit
+     arrow right linerad then down even with CTN then right linerad+arrowht
+LP:  oval "(" bold fit
+     arrow 2*arrowht
+     box "select-stmt" fit
+     arrow same
+RP:  oval ")" bold fit
+     arrow
+     circle same
+
+     arrow from AS.e then right linerad then up 0.95*$h then right linerad+arrowht
+     oval "MATERIALIZED" fit
+     arrow right even with M1.e
+     line right linerad then down linerad
+
+     arrow from AS.e then right even with MATERIALIZED
+     line right to LP.w
+
+C1:  oval "," bold fit at (.5<CTN.w,RP.e>,1.25*$h below AS)
+     arrow from RP.e right linerad then down even with C1 then to C1.e
+     line from C1.w left even with linerad+arrowht west of CTN.w \
+        then up even with CTN then right linerad
+
+     line from WITH.e to arrowht west of CTN.w

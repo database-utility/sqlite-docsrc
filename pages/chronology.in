@@ -1,0 +1,186 @@
+<title>History Of SQLite Releases</title>
+<tcl>hd_keywords {chronology} {prior releases}</tcl>
+<h1 align=center>History Of SQLite Releases</h1>
+
+<center>
+<table border=0 cellspacing=0 id='chrontab'>
+<thead>
+<tr><th class='sort desc'>Date<th class='sort none'>Version
+</thead>
+<tbody>
+<tcl>
+set nRelease 0
+set mxDate {1970-01-01}
+set mnDate {2999-12-31}
+set jsonSep \[
+set jsonChronology [open [file join $::DOC chronology.json] wb]
+puts -nonewline $jsonChronology "chronology = "
+# Iterate over the chronology provided by a proc in ./pages/chronology.tcl .
+set then [db one {SELECT julianday('2000-08-16')}] ;# for sorting
+foreach {udvv} [chronology_info] {
+  foreach {uuid date vers vnum} $udvv break;
+  hd_puts "<tr>"
+  if {[regexp {\d\d\d\d-\d\d-\d\d} $date]} {
+    set url https://www.sqlite.org/src/timeline
+    append url ?c=$uuid&y=ci
+    set jJulianDay [db one {SELECT julianday($date)}]
+    set sortKey [format "%05d" [expr {int($jJulianDay - $then)}]]
+    hd_puts "<td width='100' align='center' data-sortkey='$sortKey'>"
+    hd_puts "<a href='$url'>$date</a></td>\n"
+    if {$date>$mxDate} {set mxDate $date}
+    if {$date<$mnDate} {set mnDate $date}
+  } else {
+    # Say pending release(s) date is a month from today in chronology.json .
+    set jJulianDay [expr [db one {SELECT julianday()}] + 30]
+    hd_puts "<td width='100' align='center' data-sortkey='99999'>"
+    hd_puts "$date</td>\n"
+  }
+  incr nRelease
+  hd_puts "<td width='100' align='center' data-sortkey='$vnum'>"
+  if {[info exists "::glink(version $vers)"]} {
+    hd_resolve "\[version $vers|$vers\]</td></tr>\n"
+    glref_add "version $vers"
+  } else {
+    hd_puts "$vers</td></tr>\n"
+  }
+  set jYear [db one {SELECT strftime('%Y',$jJulianDay)}]
+  set jYearFrac [db one {
+     SELECT round(($jJulianDay-julianDay($jJulianDay,'start of year'))/365.24,4)
+  }]
+  set jDate [expr {$jYear+$jYearFrac}]
+  puts -nonewline $jsonChronology \
+    "$jsonSep{\"hash\":\"$uuid\",\"vers\":\"$vers\",\"date\":$jDate}"
+  set jsonSep ",\n"
+}
+puts $jsonChronology \]\;
+close $jsonChronology
+</tcl>
+</tbody>
+</table>
+<tcl>
+hd_puts {<script>
+function SortableTable(tableEl,columnTypes,initSort){
+  this.tbody = tableEl.getElementsByTagName('tbody');
+  this.columnTypes = columnTypes;
+  var ncols = tableEl.rows[0].cells.length;
+  for(var i = columnTypes.length; i<=ncols; i++){this.columnTypes += 't';}
+  this.sort = function (cell) {
+    var column = cell.cellIndex;
+    var sortFn;
+    switch( cell.sortType ){
+      case "n": sortFn = this.sortNumeric;  break;
+      case "t": sortFn = this.sortText;  break;
+      case "T": sortFn = this.sortReverseText;  break;
+      case "k": sortFn = this.sortKey;  break;
+      case "K": sortFn = this.sortReverseKey;  break;
+      default:  return;
+    }
+    this.sortIndex = column;
+    var newRows = new Array();
+    for (j = 0; j < this.tbody[0].rows.length; j++) {
+       newRows[j] = this.tbody[0].rows[j];
+    }
+    if( this.sortIndex==Math.abs(this.prevColumn)-1 ){
+      newRows.reverse();
+      this.prevColumn = -this.prevColumn;
+    }else{
+      newRows.sort(sortFn);
+      this.prevColumn = this.sortIndex+1;
+    }
+    for (i=0;i<newRows.length;i++) {
+      this.tbody[0].appendChild(newRows[i]);
+    }
+    this.setHdrIcons();
+  }
+  this.setHdrIcons = function() {
+    for (var i=0; i<this.hdrRow.cells.length; i++) {
+      if( this.columnTypes[i]=='x' ) continue;
+      var sortType;
+      if( this.prevColumn==i+1 ){
+        sortType = 'asc';
+      }else if( this.prevColumn==(-1-i) ){
+        sortType = 'desc'
+      }else{
+        sortType = 'none';
+      }
+      var hdrCell = this.hdrRow.cells[i];
+      var clsName = hdrCell.className.replace(/\s*\bsort\s*\w+/, '');
+      clsName += ' sort ' + sortType;
+      hdrCell.className = clsName;
+    }
+  }
+  this.sortText = function(a,b) {
+    var i = thisObject.sortIndex;
+    aa = a.cells[i].textContent.replace(/^\W+/,'').toLowerCase();
+    bb = b.cells[i].textContent.replace(/^\W+/,'').toLowerCase();
+    if(aa<bb) return -1;
+    if(aa==bb) return a.rowIndex-b.rowIndex;
+    return 1;
+  }
+  this.sortReverseText = function(a,b) {
+    var i = thisObject.sortIndex;
+    aa = a.cells[i].textContent.replace(/^\W+/,'').toLowerCase();
+    bb = b.cells[i].textContent.replace(/^\W+/,'').toLowerCase();
+    if(aa<bb) return +1;
+    if(aa==bb) return a.rowIndex-b.rowIndex;
+    return -1;
+  }
+  this.sortNumeric = function(a,b) {
+    var i = thisObject.sortIndex;
+    aa = parseFloat(a.cells[i].textContent);
+    if (isNaN(aa)) aa = 0;
+    bb = parseFloat(b.cells[i].textContent);
+    if (isNaN(bb)) bb = 0;
+    if(aa<bb) return -1;
+    if(aa>bb) return +1;
+    return a.rowIndex-b.rowIndex;
+  }
+  this.sortKey = function(a,b) {
+    var i = thisObject.sortIndex;
+    aa = a.cells[i].getAttribute("data-sortkey");
+    bb = b.cells[i].getAttribute("data-sortkey");
+    if(aa<bb) return -1;
+    if(aa==bb) return a.rowIndex-b.rowIndex;
+    return 1;
+  }
+  this.sortReverseKey = function(a,b) {
+    var i = thisObject.sortIndex;
+    aa = a.cells[i].getAttribute("data-sortkey");
+    bb = b.cells[i].getAttribute("data-sortkey");
+    if(aa<bb) return +1;
+    if(aa==bb) return a.rowIndex-b.rowIndex;
+    return -1;
+  }
+  var x = tableEl.getElementsByTagName('thead');
+  if(!(this.tbody && this.tbody[0].rows && this.tbody[0].rows.length>0)){
+    return;
+  }
+  if(x && x[0].rows && x[0].rows.length > 0) {
+    this.hdrRow = x[0].rows[0];
+  } else {
+    return;
+  }
+  var thisObject = this;
+  this.prevColumn = initSort;
+  for (var i=0; i<this.hdrRow.cells.length; i++) {
+    if( columnTypes[i]=='x' ) continue;
+    var hdrcell = this.hdrRow.cells[i];
+    hdrcell.sTable = this;
+    hdrcell.style.cursor = "pointer";
+    hdrcell.sortType = columnTypes[i] || 't';
+    hdrcell.onclick = function () {
+      this.sTable.sort(this);
+      return false;
+    }
+  }
+  this.setHdrIcons()
+}
+var t = new SortableTable(document.getElementById("chrontab"),"nK",1);
+</script>
+}</tcl>
+<p>
+<tcl>
+set nDay [db eval {SELECT julianday($mxDate)-julianday($mnDate)}]
+hd_putsnl "<i>$nRelease releases"
+hd_putsnl "over [format %.1f [expr {$nDay/365.24}]] years.</i>"
+</tcl>

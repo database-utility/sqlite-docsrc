@@ -1,0 +1,124 @@
+#!/usr/bin/tclsh.docsrc
+#### Import of wapp.tcl
+INCLUDE wapp.tcl
+#### End of wapp.tcl
+
+# Generate all header content for the output document
+#
+proc search_header {} {
+  wapp-trim {
+DOCHEAD {Search SQLite Stats} {../}
+  }
+}
+
+proc wapp-default {} {
+  # When running using the built-in webserver in Wapp (in other words,
+  # when not running as CGI) any filename that contains a "." loads
+  # directly from the filesystem.
+  if {[wapp-param WAPP_MODE]!="cgi"]
+   && [string match *.* [wapp-param PATH_INFO]]
+  } {
+    set altfile [file dir [wapp-param SCRIPT_FILENAME]]/../[wapp-param PATH_INFO]
+    set fd [open $altfile rb]
+    fconfigure $fd -translation binary
+    wapp-unsafe [read $fd]
+    close $fd
+    switch -glob -- $altfile {
+      *.html {
+        wapp-mimetype text/html
+      }
+      *.css {
+        wapp-mimetype text/css
+      }
+      *.gif {
+        wapp-mimetype image/gif
+      }
+    }
+    return
+  }
+  wapp-page-admin
+}
+proc wapp-page-admin {} {
+  wapp-allow-xorigin-params
+  wapp-content-security-policy off
+  if {[wapp-param-exists env]} {
+    search_header
+    wapp-trim {
+      <h1>Environment</h1>
+      <pre>%html([wapp-debug-env])</pre>
+    }
+    return
+  }
+  sqlite3 db2 [file dir [wapp-param SCRIPT_FILENAME]]/searchlog.db
+  set where ""
+  set res ""
+
+  set ipfilter ""
+  set ipaddr [wapp-param ip]
+  if {$ipaddr!=""} {
+    set where {WHERE ip = $ipaddr}
+    set ipfilter $ipaddr
+  }
+
+  set checked ""
+  set isUnique [expr {[wapp-param unique 0]+0}]
+  if {$isUnique} {
+    set checked "checked"
+  }
+
+  set limit [wapp-param limit 10]
+  set s10 ""
+  set s100 ""
+  set s1000 ""
+  if {$limit==10} {set s10 selected}
+  if {$limit==100} {set s100 selected}
+  if {$limit==1000} {set s1000 selected}
+
+  search_header
+  set self [wapp-param PATH_HEAD]
+  wapp-trim {
+    <div style="margin:2em">
+    <center>
+    <form action='%url($self)' method='GET'>
+      Results: <select name=limit onChange="this.form.submit()">
+        <option %html($s10) value="10">10</option>
+        <option %html($s100) value="100">100</option>
+        <option %html($s1000) value="1000">1000</option>
+      </select>
+      IP: <input type=input name=ip value="%html($ipfilter)">
+      Unique: <input 
+        type=checkbox name=unique value=1 
+        $checked
+        onChange="this.form.submit()">
+      <input type=submit>
+    </form>
+    </center>
+    </div>
+    <table border=1 cellpadding=10 align=center>
+    <tr><td><th>IP <th>Query <th> Results <th> Timestamp
+  }
+
+  set i 0
+  db2 eval "
+    SELECT rowid, ip, query, nres, timestamp FROM log $where
+    ORDER BY rowid DESC
+  " {
+
+    if {$isUnique} {
+      if {[info exists seen($query)]} continue
+      set seen($query) 1
+    }
+
+    wapp-trim {
+      <tr><td>%html($rowid)
+          <td><a href='%url($self)?ip=%qp($ip)'>%html($ip)</a>
+          <td><a href='../search?q=%qp($query)&donotlog=1'>%html($query)</a>
+          <td>%html($nres)<td>%html($timestamp)
+    }
+    incr i
+    if {$i >= $limit} break
+  }
+  wapp-subst {</table\n}
+  db2 close
+}
+wapp-start $argv

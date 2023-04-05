@@ -1,0 +1,20 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 150%
+SN:  box "signed-number" fit
+     arrow 150%
+C9:  circle same
+
+NM:  oval "name" fit with .w at 1.25*$h below SN.w
+SL:  oval "signed-literal" fit with .w at 1.25*$h below NM.w
+X1:  2*linerad + arrowht left of  SN.w
+     arrow from X1 right linerad then down even with SL then to SL.w
+     arrow from SL.e right even with SN.e
+     line right linerad then up even with C0 then right linerad
+     arrow from NM.e right even with SN.e
+     line right linerad then up linerad
+     arrow from (linerad right of X1, NM.n) down even with NM then to NM.w

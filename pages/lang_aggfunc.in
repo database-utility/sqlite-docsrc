@@ -1,0 +1,163 @@
+<title>Built-in Aggregate Functions</title>
+<tcl>
+hd_keywords *aggfunc {Aggregate Functions} {aggregate functions}
+
+unset -nocomplain aggfuncset
+proc funcdef {syntax keywords desc} {
+  global aggfuncset
+  regexp {^[a-z_]+} $syntax basesyntax
+  set aggfuncset($basesyntax) [list $syntax $keywords $desc]
+}
+
+funcdef {avg(X)} {*avg {avg() aggregate function}} {
+  ^The avg() function
+  returns the average value of all non-NULL <i>X</i> within a
+  group.  ^String and BLOB values that do not look like numbers are
+  interpreted as 0.
+  ^The result of avg() is always a floating point value whenever
+  there is at least one non-NULL input even if all
+  inputs are integers.  ^The result of avg() is NULL if and only if
+  there are no non-NULL inputs.  
+}
+
+funcdef {count(X) count(*)} {*count {count() aggregate function}} {
+  ^The count(X) function returns
+  a count of the number of times
+  that <i>X</i> is not NULL in a group.  ^The count(*) function
+  (with no arguments) returns the total number of rows in the group.
+}
+
+funcdef {group_concat(X) group_concat(X,Y)} {
+  *group_concat {group_concat() aggregate function}
+} {
+  ^The group_concat() function returns
+  a string which is the concatenation of
+  all non-NULL values of <i>X</i>.  ^If parameter <i>Y</i> is present then
+  it is used as the separator
+  between instances of <i>X</i>.  ^A comma (",") is used as the separator
+  if <i>Y</i> is omitted.  The order of the concatenated elements is
+  arbitrary.
+}
+
+funcdef {max(X)} {*max_agg {max() aggregate function}} {
+  ^The max() aggregate function
+  returns the maximum value of all values in the group.
+  ^The maximum value is the value that would be returned last in an
+  ORDER BY on the same column.  ^Aggregate max() returns NULL 
+  if and only if there are no non-NULL values in the group.
+}
+
+funcdef {min(X)} {*min_agg {min() aggregate function}} {
+  ^The min() aggregate function
+  returns the minimum non-NULL value of all values in the group.
+  ^The minimum value is the first non-NULL value that would appear
+  in an ORDER BY of the column.
+  ^Aggregate min() returns NULL if and only if there are no non-NULL
+  values in the group.
+}
+
+funcdef {sum(X) total(X)} {
+  *sumFunc *sum *total
+  {sum() aggregate function}
+  {total() aggregate function}
+} {
+  ^The sum() and total() aggregate functions
+  return the sum of all non-NULL values in the group.
+  ^If there are no non-NULL input rows then sum() returns
+  NULL but total() returns 0.0.
+  NULL is not normally a helpful result for the sum of no rows
+  but the SQL standard requires it and most other
+  SQL database engines implement sum() that way so SQLite does it in the
+  same way in order to be compatible.   The non-standard total() function
+  is provided as a convenient way to work around this design problem
+  in the SQL language.</p>
+
+  <p>^The result of total() is always a floating point value.
+  ^The result of sum() is an integer value if all non-NULL inputs are integers.
+  ^If any input to sum() is neither an integer nor a NULL,
+  then sum() returns a floating point value
+  which is an approximation of the mathematical sum.</p>
+
+  <p>^Sum() will throw an "integer overflow" exception if all inputs
+  are integers or NULL
+  and an integer overflow occurs at any point during the computation.
+  ^Total() never throws an integer overflow.
+}
+</tcl>
+
+<fancy_format>
+
+<h1>Syntax</h1>
+<tcl>
+RecursiveBubbleDiagram aggregate-function-invocation
+</tcl>
+
+<p>
+The aggregate functions shown below are available by default.  Additional
+aggregate functions written in C may be added using the 
+[sqlite3_create_function()]</a>
+API.</p>
+
+<p>
+^In any aggregate function that takes a single argument, that argument
+can be preceded by the keyword DISTINCT.  ^In such cases, duplicate
+elements are filtered before being passed into the aggregate function.
+^For example, the function "count(distinct X)" will return the number
+of distinct values of column X instead of the total number of non-null
+values in column X.
+</p>
+
+<tcl>hd_fragment aggfilter {FILTER clause on aggregate functions}</tcl>
+<p>
+If a FILTER clause is provided, then only rows for which the <i>expr</i> is
+true are included in the aggregate.
+</p>
+
+<tcl>hd_fragment aggfunclist</tcl>
+<h1>List of built-in aggregate functions</h1>
+
+<tcl>
+set lx {}
+foreach basesyntax [array names aggfuncset] {
+  foreach {syntax keywords desc} $aggfuncset($basesyntax) break
+  regexp {^[a-z_]+} $basesyntax fragment
+  set firstkw [lindex $keywords 0]
+  # If first keyword is both starred and the function name suffixed with something,
+  # then use that keyword in lieu of the function name for its location tag.
+  # This avoids a problem where the same function name appears defined in more
+  # than one page, leading to either conflicting or misdirected location tags.
+  if {[string index $firstkw 0] eq "*" && [string first $fragment $firstkw] == 1} {
+    set fragment [string range $firstkw 1 end]
+  }
+  foreach coresyntax $syntax {
+    lappend lx [list $fragment $coresyntax 0]
+  }
+}
+hd_list_of_links {} 225 [lsort -index 1 $lx]
+</tcl>
+
+<h1>Descriptions of built-in aggregate functions</h1>
+<dl>
+
+<tcl>
+foreach basesyntax [lsort [array names aggfuncset]] {
+  foreach {syntax keywords desc} $aggfuncset($basesyntax) break
+  regsub -all {\s+} [string trim $syntax] {<br />} syntax
+  regsub -all {\(([^*)]+)\)} $syntax {(<i>\1</i>)} syntax
+  regsub -all {,} $syntax {</i>,<i>} syntax
+  regsub -all {<i>\.\.\.</i>} $syntax {...} syntax
+  regexp {^[a-z]+} $basesyntax fragment
+  if {[llength $keywords]==0} {
+    regexp {[a-z_]+} $syntax name
+    hd_fragment $name *$name "${name}() SQL function"
+  } else {
+    set fragname [lindex $keywords 0]
+    regsub -all {[^a-z_]} $fragname {} fragname
+    hd_fragment $fragname
+    eval hd_keywords [string map {\n { }} $keywords]
+  }
+  hd_puts "<dt><p><b>$syntax</b></dt>"
+  hd_resolve "<dd><p>$desc</dd>\n"
+}
+</tcl>
+</dl>

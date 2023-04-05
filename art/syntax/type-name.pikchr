@@ -1,0 +1,37 @@
+      linerad = 10px
+      linewid *= 0.5 
+      $h = 0.21
+      # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:   circle radius 10%
+      arrow
+NAME: oval "name" fit
+      arrow right linewid then down 2.5*$h then right linerad+arrowht
+      oval "(" bold fit
+      arrow 1.5*arrowht
+      box "signed-number" fit
+      arrow same
+      oval "," bold fit
+      arrow same
+      box "signed-number" fit
+      arrow same
+RP2:  oval ")" bold fit
+      arrow right linerad then up even with C0 then right
+      circle same
+
+      arrow from NAME.e right linewid then down 1.25*$h \
+        then right linerad+arrowht
+      oval "(" bold fit
+      arrow 1.5*arrowht
+      box "signed-number" fit
+      arrow same
+RP1:  oval ")" bold fit
+      arrow right even with RP2.e
+      line right linerad then up linerad
+
+      arrow from NAME.e right linerad then down $h then left even with NAME
+      line left even with linerad+arrowht west of NAME.w \
+         then up even with NAME then right linerad
+
+      arrow from NAME.e right even with RP1
+      line right even with 2*linerad east of RP2.e

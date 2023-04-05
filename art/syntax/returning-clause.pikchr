@@ -1,0 +1,45 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+     circle radius 10%
+     arrow width 50%
+C0:  oval "RETURNING" fit
+A0:  arrow 250%
+E1:  box "expr" fit
+     arrow right linerad then down 1.0*$h then right linerad+arrowht
+AS:  oval "AS" fit
+     arrow
+     oval "column-alias" fit
+     arrow 2*arrowht
+X9:  previous.end
+     arrow right linerad then up even with C0 then right linerad+arrowht
+X10: previous.end
+     arrow right linerad+arrowht*2
+C99: circle same
+
+     # AS bypass
+     arrow from (linerad right of E1.e,AS.n) down even with $h*0.8 below AS \
+        then right even with AS
+     line right even with linerad east of AS.e then up even with AS \
+        then right linerad
+
+     # alias bypass
+     arrow from E1.e to .5<E1.e,C99.w>; line to arrowht west of C99.w
+
+MID: 0.5 between linewid left of E1.w and X10
+
+     # "*" option
+STR: oval "*" bold fit at (MID.x,E1.y-2.5*$h)
+     arrow from C0.e right A0.wid-linerad-arrowht \
+        then down even with STR then to STR.w
+     arrow from STR.e right even with X9
+     line right linerad then up even with AS.n
+
+     # Loop back
+CMA: oval "," bold fit at (MID.x,E1.y+1.0*$h)
+     arrow from X10 right linerad then up even with CMA \
+        then left to CMA.e
+     arrow from CMA.w left even with arrowht east of C0.e \
+        then down even with C0 then right linerad+arrowht

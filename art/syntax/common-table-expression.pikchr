@@ -1,0 +1,46 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+TN:  oval "table-name" fit
+A1:  arrow 2*arrowht
+     arrow
+     oval "(" bold fit
+     arrow 2*arrowht
+     arrow
+CN:  oval "column-name" fit
+     arrow
+RP:  oval ")" bold fit
+AFB: arrow 3*arrowht
+     # Fold AS clause leftward-downward
+AS:  oval "AS" fit with .w at 4.0*TN.ht below TN.w #even with arrowht right of TN.w
+N:   oval "NOT" fit at 3*TN.ht below TN.e
+M:   oval "MATERIALIZED" fit with .w at 2.75*linerad right of N.e
+     line from N.e to M.w
+NSS: oval "(" bold fit at 4.0*TN.ht below CN.e
+     arrow 2*arrowht
+     box "select-stmt" fit
+     arrow 2*arrowht
+     oval ")" bold fit
+     arrow 2*arrowht
+     circle same    
+     # Comma loop-back on column-name
+CMA: oval "," bold fit at 1.25*TN.ht below CN
+     arrow from CN.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2.0*arrowht left of CN.w \
+        then up even with CN then right linerad
+     # Foldback path to AS clause
+AFE: arrow from AFB.e then right arrowht then down even with arrowht below CMA.s \
+        then left even with AS.e
+     arrow left 1.5*AS.width then down even with AS then right to AS.w
+     # Materialization hint paths
+     arrow from AS.e then right 1.25*linerad
+     arrow right 0.5*linerad then up even with N then right to N.w
+     arrow from AS.e then right even with N.e then right linerad \
+        then up even with M then right to M.w
+     arrow from M.e then right linerad then down even with NSS then right to NSS.w
+     line from AS.e to NSS.w
+     # Column name list bypass
+     arrow from A1.end right linerad then up .75*TN.ht then right even with CN
+     line right even with arrowht right of RP.e then down even with RP then right linerad

@@ -1,0 +1,18 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+REL: oval "RELEASE" fit
+     arrow
+SVP: oval "SAVEPOINT" fit
+     arrow
+     oval "savepoint-name" fit
+     arrow 2*arrowht
+     circle same
+
+     arrow from REL.e right linerad then down 1*$h then right even with SVP
+     line right even with linerad right of SVP.e then up even with SVP \
+         then right linerad

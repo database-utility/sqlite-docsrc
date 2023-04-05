@@ -1,0 +1,53 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+
+     # The "--" line
+     arrow
+DD:  oval "--" bold fit
+A1:  arrow 2*arrowht
+X1:  oval "anything-except-newline" fit \
+        with .w at A1.end+(linewid,-1.25*DD.ht)
+
+     # Bypass anything-except-newline
+A2:  arrow from A1.end right even with .75<X1,X1.e>
+
+     # loopback through anything-except-newline
+     arrow right even with 2.0*arrowht east of X1.e then down even with X1 \
+       then to X1.e
+     arrow from X1.w left 2*arrowht then up even with A1 then right 4*linerad
+
+     # the newline and end-of-input bubbles
+     arrow from (X1.e,A1) right 250%
+NL:  oval "newline" fit
+E1:  oval "end-of-input" fit with .w at 1.25*DD.ht below NL.w
+
+     # Line from "end-of-input" to the output circle
+A3:  arrow from E1.e right 2*arrowht
+     arrow right linerad then up even with A1 then right
+     circle same
+
+     # line from "newline" to output circle
+     line from NL.e to 2*arrowht left of last circle
+
+     # Line to the right of "--" then dropping down into "end-of-input"
+     arrow from (X1.e,DD) to 2.5*linerad left of NL.w \
+         then down even with E1 then to E1.w
+
+     # The /* line
+DS:  oval "/*" bold fit at 2.5*DD.ht below DD
+     arrow from A0.end right linerad then down even with DS then to DS.w
+     arrow right 2*arrowht from DS.e
+     line right 2*linewid
+X2:  oval "anything-except-*/" fit with .w at 2.5*DD.ht below X1.w
+SD:  oval "*/" bold fit with .w at 2.5*DD.ht below NL.w
+     arrow from (X2.e,DS) right 2*arrowht then down even with X2 then to X2.e
+     arrow from X2.w left 2*arrowht then up even with DS then to SD.w
+     arrow from SD.e right even with A3.end
+     line right linerad then up even with E1.n
+
+     # second entry into end-of-input, from the /* line below
+     line from (3.5*linerad left of NL.w,DS) right linerad \
+        then up even with E1 then to arrowht west of E1.w

@@ -1,0 +1,46 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+TN:  oval "table-name" fit
+     arrow right linerad then down .9*$h then right linerad+arrowht
+     oval "AS" fit
+A1:  arrow 2*arrowht
+     oval "alias" fit
+A3:  arrow 2*arrowht; A4: line right linerad then down linerad
+A2:  arrow from TN.e left even with A1
+
+     # schema-name bypass
+     arrow from C0.e right linerad then down 0.9*$h then right even with SN
+     line right even with linerad right of DOT.e then up even with DOT \
+        then right linerad
+
+Y1:  1.5*$h below A1
+X1:  (DOT.w,1.25*$h below Y1);
+     right
+IDX: oval "INDEXED" fit with .w at linerad+arrowht east of X1
+     arrow 2*arrowht
+     oval "BY" fit
+     arrow 2*arrowht
+IN:  oval "index-name" fit
+NOT: oval "NOT" fit with .w at 1.25*$h below IDX.w
+     arrow 2*arrowht
+NIX: oval "INDEXED" fit
+
+A4:  arrow from A2.end right even with A4.end then down to linerad below A4.end
+     arrow down even with Y1 then left even with TN
+     arrow left even with X1 then down even with IDX then to IDX.w
+     arrow from (X1,IDX.n) down even with NOT then to NOT.w
+     arrow from A4.end down even with .5<Y1,arrowht below IN>
+     arrow down even with NOT then right
+     circle same
+
+     arrow from IN.e right even with A3.end; line right linerad then down linerad
+     line from NIX.e to arrowht left of last circle.w

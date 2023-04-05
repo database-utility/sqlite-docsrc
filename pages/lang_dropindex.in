@@ -1,0 +1,16 @@
+<title>DROP INDEX</title>
+<tcl>
+hd_keywords *dropindex {DROP INDEX}
+</tcl>
+
+<fancy_format>
+<tcl>
+RecursiveBubbleDiagram drop-index-stmt
+</tcl>
+
+<p>^The DROP INDEX statement removes an index added
+with the [CREATE INDEX] statement.  The index is completely removed from
+the disk.  The only way to recover the index is to reenter the
+appropriate [CREATE INDEX] command.</p>
+
+<tcl>

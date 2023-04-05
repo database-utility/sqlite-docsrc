@@ -1,0 +1,111 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+A0:  circle radius 10%
+     arrow 
+REF: oval "REFERENCES" fit
+     arrow 2*arrowht
+FT:  oval "foreign-table" fit
+     arrow
+     oval "(" bold fit
+     arrow
+CN:  oval "column-name" fit
+     arrow
+RP1: oval ")" bold fit
+
+     # Loop over column-name
+CMA: oval "," bold fit at 1.25*$h above CN
+     arrow from CN.e right linerad then up even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht west of CN.w \
+        then down even with CN then to CN.w
+
+
+     # vertical position of the back-arrow
+Y1:  2*$h below first circle
+
+     # The ON/MATCH clause
+     right
+ON:  oval "ON" fit with .w at 3.5*$h below REF.w
+     arrow
+DEL: oval "DELETE" fit
+     arrow 200%
+S1:  oval "SET" fit
+     arrow 2*arrowht
+NUL: oval "NULL" fit
+UP:  oval "UPDATE" fit with .w at 1.25*$h below DEL.w
+     arrow from ON.e right linerad then down even with UP then to UP.w
+     line from UP.e right linerad then up even with DEL then right linerad
+S2:  oval "SET" fit with .w at 1.25*$h below S1.w
+     arrow 2*arrowht
+     oval "DEFAULT" fit
+A1:  arrow 2*arrowht;  line right linerad then up linerad; right
+CAS: oval "CASCADE" fit with .w at 1.25*$h below S2.w
+     arrow right even with A1.end; line right linerad then up linerad; right
+RES: oval "RESTRICT" fit with .w at 1.25*$h below CAS.w
+     arrow right even with A1.end;  line right linerad then up linerad; right
+NO:  oval "NO" fit with .w at 1.25*$h below RES.w
+     arrow 2*arrowht
+ACT: oval "ACTION" fit
+     arrow right even with A1.end; line right linerad then up linerad; right
+MAT: oval "MATCH" fit with .w at (ON.w.x,NO.w.y-1.0*$h)
+     arrow 2*arrowht
+     oval "name" fit
+     arrow right even with A1.end
+
+     # vertical exit line off of all of the ON cases
+     arrow right linerad then up even with Y1 then left
+
+     # the exit line from SET NULL
+     arrow from NUL.e right even with A1.end; line right linerad then up linerad
+
+     # entrance arrows for SET NULL, SET DEFAULT, etc.
+     $x1 = S1.w.x - 2*arrowht
+     arrow from ($x1-linerad,S1.w.y) right linerad \
+        then down even with NO then to NO.w 
+     arrow from ($x1,RES.n.y) down even with RES then to RES.w
+     arrow from ($x1,CAS.n.y) down even with CAS then to CAS.w
+     arrow from ($x1,S2.n.y) down even with S2 then to S2.w
+
+     # loop back from column list along the Y1 corridor
+     arrow from RP1.e right 50% then down even with Y1 then left even with A0 \
+        then down even with ON then to ON.w
+     arrow from (A0.x,ON.n.y) down even with MAT then to MAT.w
+
+     # column name list bypass
+     arrow from FT.e right linerad then down 0.5*(FT.y-Y1.y+arrowht)
+     line down even with Y1 then left linerad
+
+     # Construct the NOT DEFERRABLE clause
+     right
+NOT: oval "NOT" fit with .w at 2.5*$h below MAT.w
+     arrow right linerad then up $h then right 2*arrowht
+ABL: oval "DEFERRABLE" fit
+     arrow right linerad then down $h then right 2*arrowht
+I1:  oval "INITIALLY" fit
+     arrow 2*arrowht
+D1:  oval "DEFERRED" fit
+I2:  oval "INITIALLY" fit at 1.25*$h below I1
+     arrow 2*arrowht
+     oval "IMMEDIATE" fit
+A2:  arrow 2*arrowht
+A3:  arrow from D1.e right even with A2.end
+A4:  arrow from ABL.e right even with A2.end
+
+     # connect the second IMMEDATE from DEFERRABLE
+     arrow from ABL.e right linerad then down even with I2 then to I2.w
+
+     # Generate the output circle and complete exists to the output circle
+     arrow from A4.end right linerad then down even with $h below I2 \
+        then right 150%
+     circle same
+     line from A2.end right linerad then down linerad
+     line from A3.end right linerad then down linerad
+
+     # the DEFERRABLE bypass line
+     line from (first circle,MAT.n) down even with last circle \
+       then to arrowht west of last circle.w
+
+     # Hookups to DEFERRABLE and NOT
+     line from (first circle,ABL.n) down even with ABL then right to ABL.w
+     arrow from (first circle,NOT.n) down even with NOT then right to NOT.w

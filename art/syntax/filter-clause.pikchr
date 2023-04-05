@@ -1,0 +1,14 @@
+     linewid = 2*arrowht
+     circle radius 10%
+     arrow
+     oval "FILTER" fit
+     arrow
+     oval "(" bold fit
+     arrow
+     oval "WHERE" fit
+     arrow
+     box "expr" fit
+     arrow
+     oval ")" bold fit
+     arrow
+     circle same

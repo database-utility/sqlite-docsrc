@@ -1,0 +1,34 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+     arrow 2*arrowht
+AX:  oval "ANALYZE" fit
+A1:  arrow 2*arrowht
+
+     # bottom row
+     arrow from A1.end right linerad then down 3.5*AX.ht then right 2*arrowht
+     oval "schema-name" fit
+     arrow 2*arrowht
+     oval "." bold fit
+     arrow 2*arrowht
+     oval "table-or-index-name" fit
+A2:  arrow 2*arrowht
+     arrow right linerad then up even with AX then right
+END: circle radius 10%
+
+     # finish the top bypass
+     arrow from A1.end to .5<A1.end,END.w>
+     line to arrowht left of END.w
+
+     # schema-name row
+     arrow from A1.end right linerad then down AX.ht then right 2*arrowht
+     oval "schema-name" fit
+     arrow right even with A2.end
+     line right linerad then up linerad
+
+     # index-or-table-name row
+     arrow from A1.end right linerad then down 2.25*AX.ht then right 2*arrowht
+     oval "index-or-table-name" fit
+     arrow right even with A2.end
+     line right linerad then up linerad

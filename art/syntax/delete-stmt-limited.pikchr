@@ -1,0 +1,116 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+A0:  circle radius 10%
+###A0:  arrow 2*arrowht
+
+     # Draw the optional WITH prefix
+     arrow
+WTH: oval "WITH" fit
+RSV: oval "RECURSIVE" fit with .w at WTH.e + (1.25*linewid,-1.0*$h)
+     arrow from WTH.e right even with RSV
+     arrow right even with RSV.e+(2.5*linewid,0)
+CTE: box "common-table-expression" fit
+
+     # Link in the RECURSIVE bubble
+     arrow from WTH.e right linerad then down even with RSV then to RSV.w
+     arrow from RSV.e right 2*arrowht
+     line right linerad then up even with WTH then to arrowht left of CTE.w
+
+     # CTE loop back
+C1:  oval "," bold fit at 1.25*$h below CTE
+     arrow from CTE.e right linerad then down even with C1 then to C1.e
+     line from C1.w right even with 2*arrowht west of CTE.w \
+        then up even with CTE then to arrowht west of CTE.w
+
+     # Main line
+Y1:  1.25*$h below RSV   # Vertical position of the WITH clause back-arrow
+     right
+DEL: oval "DELETE" fit with .w at (WTH.w,1.25*$h below Y1)
+     arrow 2*arrowht
+FRM: oval "FROM" fit
+     arrow 2*arrowht
+QTN: box "qualified-table-name" fit
+
+     # Link the CTE and the start circle into DELETE
+X0:  linerad right of A0.e
+     arrow from A0.e right linerad then down even with DEL then to DEL.w
+     arrow from CTE.e right linerad then down even with Y1 then left even with QTN
+     line left even with X0 then down linerad
+
+     # 2nd-line with WHERE
+Y2:  1.25*$h below DEL
+     right
+WHR: oval "WHERE" fit with .w at (WTH.w,1.25*$h below Y2)
+     arrow 2*arrowht
+EXP: box "expr" fit
+
+Y2B: 1.25*$h below WHR
+RC:  box "returning-clause" fit with .w at (WTH.w,1.25*$h below Y2B)
+
+     # 3rd-line with ORDER BY
+Y3:  1.25*$h below RC
+ORD: oval "ORDER" fit with .w at (WTH.w,1.25*$h below Y3)
+     arrow 2*arrowht
+BY:  oval "BY" fit
+     arrow
+OT:  box "ordering-term" fit
+C1:  oval "," bold fit at 1.25*$h below OT
+
+     # 4th-line with LIMIT
+Y4:  1.0*$h below C1
+LMT: oval "LIMIT" fit with .w at (WTH.w,1.25*$h below Y4)
+     arrow right 2*arrowht
+LEX: box "expr" fit
+     arrow right linerad then down $h then right 2*arrowht
+OST: oval "OFFSET" fit
+     arrow 2*arrowht
+OEX: box "expr" fit
+C3:  oval "," bold fit with .w at 1.25*$h below OST.w; right
+     arrow 2*arrowht
+CEX: box "expr" fit
+     arrow from LEX.e right linerad then down even with C3 then to C3.w
+
+     # Output circle
+     arrow from LEX.e right even with 2*linerad right of CTE.e
+     circle same
+OUT: 2*arrowht+linerad left of last circle.w
+
+     # Bypass from core DELETE to output circle
+     arrow from QTN.e right even with OUT
+     line right linerad then down even with OUT then right linerad
+
+     # Link DELETE into WHERE and WHERE into output
+     arrow from QTN.e right linerad then down even with Y2 \
+       then left even with .25<QTN.w,QTN.w>
+     arrow left even with X0 then down even with WHR then to WHR.w
+     arrow from EXP.e right even with OUT; line right linerad then down linerad
+
+     # RETURNING clause inputs and outputs
+     arrow from (X0,RC.nw) then down even with RC then to RC.w
+     arrow from RC.e right linerad then down even with Y3 \
+        then left even with RC
+     line left even with X0 then down linerad
+     arrow from RC.e right even with OUT
+     line right linerad then down linerad
+
+     # ORDER BY inputs and outputs
+     arrow from (X0,WHR.n) down even with ORD then to ORD.w
+     arrow from EXP.e right linerad then down even with Y2B then left even with ORD.e
+     line left even with X0 then down linerad
+
+     # ordering-term loop on ORDER BY
+     arrow from OT.e right linerad then down even with C1 then to C1.e
+     line from C1.w left even with 2*arrowht left of OT.w then up even with OT \
+       then right linerad
+
+     # LIMIT inputs
+     arrow from (X0,ORD.n) down even with LMT then to LMT.w
+     arrow from OT.e right linerad then down even with Y4 then left even with BY
+     line left even with X0 then down linerad
+
+     # Output links for OFFSET expressions
+     arrow from CEX.e right even with 2*arrowht + linerad east of OEX.e \
+       then up even with LMT then right
+     arrow from OEX.e right 2*arrowht; line right linerad then up linerad

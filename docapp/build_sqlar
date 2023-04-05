@@ -1,0 +1,9 @@
+.open docs.sqlar
+PRAGMA page_size=512;
+DROP TABLE IF EXISTS sqlar;
+.ar -c main.tcl wapp.tcl
+BEGIN;
+.ar -i doc
+DELETE FROM sqlar WHERE name LIKE 'doc/matrix/%';
+COMMIT;
+VACUUM;

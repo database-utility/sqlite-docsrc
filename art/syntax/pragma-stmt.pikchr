@@ -1,0 +1,40 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+PRG: oval "PRAGMA" fit
+     arrow
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DT:  oval "." bold fit
+     arrow
+PN:  oval "pragma-name" fit
+Y1:  .9*$h below C0
+Y2:  1.25*$h below Y1
+     arrow right linerad then down even with Y2 then right linerad+arrowht
+     oval "(" bold fit
+     arrow 2*arrowht
+     box "pragma-value" fit
+     arrow 2*arrowht
+RP:  oval ")" bold fit
+     arrow right linerad then up even with C0 then right linerad+arrowht
+C9:  circle same
+
+     arrow from PN.e right linerad then down even with Y1 \
+         then right linerad+arrowht
+     oval "=" bold fit
+     arrow 2*arrowht
+     box "pragma-value" fit
+     arrow right even with RP.e
+     line right linerad then up linerad
+
+     arrow from PN.e right 0.5*dist(PN.e,C9.w)
+     line to arrowht west of C9.w
+
+     arrow from PRG.e right linerad then down even with Y1 \
+         then right even with SN
+     line right even with linerad right of DT.e then up even with DT \
+         then right linerad

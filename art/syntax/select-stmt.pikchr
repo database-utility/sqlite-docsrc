@@ -1,0 +1,263 @@
+       linerad = 10px
+       linewid *= 0.5 
+       $h = 0.21
+       # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:    circle radius 10%
+
+       # Draw the optional WITH prefix
+       arrow
+WTH:   oval "WITH" fit
+RSV:   oval "RECURSIVE" fit with .w at WTH.e + (1.25*linewid,-1.0*WTH.ht)
+       arrow from WTH.e right even with RSV
+       arrow right even with RSV.e+(2.5*linewid,0)
+CTE:   box "common-table-expression" fit
+
+          # Link in the RECURSIVE bubble
+          arrow from WTH.e right linerad then down even with RSV then to RSV.w
+          arrow from RSV.e right 2*arrowht
+          line right linerad then up even with WTH then to arrowht left of CTE.w
+
+          # CTE loop back
+C1:       oval "," bold fit at WTH.ht*1.25 below CTE
+          arrow from CTE.e right linerad then down even with C1 then to C1.e
+          line from C1.w right even with 2*arrowht west of CTE.w \
+             then up even with CTE then to arrowht west of CTE.w
+
+          # Arrow from end of CTE half way back toward the left margin
+CEX:      arrow from CTE.e right linerad then down 2.2*$h \
+             then left even with .5<C0,CTE.e>
+Wout:     previous.end
+
+       # Wout and input circle down to the SELECT
+       line from Wout left even with linerad right of C0.e \
+          then down 2*linerad
+       arrow from C0.e right linerad  then down even with RSV
+       arrow down even with 1.5*$h below Wout \
+          then right 2*linerad
+X0:    previous.end
+       arrow 200%
+
+X1:    previous.end
+SEL:   oval "SELECT" fit
+       arrow right linerad then down 1.0*$h then right linerad+arrowht
+DSTCT: oval "DISTINCT" fit
+       arrow right linerad then up even with SEL then right 150%
+RC:    box "result-column" fit
+CMA1:  oval "," bold fit at 1.25*$h below RC
+       arrow from RC.e right linerad then down even with CMA1 then to CMA1.e
+       line from CMA1.w right even with linerad+arrowht west of RC.w \
+          then up even with RC then right linerad
+
+       # DISTINCT bypass
+       arrow from SEL.e right even with DSTCT
+       line to arrowht west of RC.w
+
+       # ALL option
+ALL:   oval "ALL" fit with .w at 1.25*$h below DISTINCT.w
+       arrow right even with DSTCT.e
+       line right linerad then up even with DSTCT.n
+       arrow from SEL.e right linerad then down even with ALL then to ALL.w
+
+BACK1: 1.25*$h below ALL
+X2:    linerad+arrowht right of X1
+
+       # Build the FROM clause
+       right
+FROM:  oval "FROM" fit with .w at (X2,1.25*$h below BACK1)
+       arrow 200%
+TORS:  box "table-or-subquery" fit
+JCLS:  box "join-clause" fit at 2.45*$h below TORS
+CMA2:  oval "," bold fit at 1.2*$h below TORS
+       arrow from TORS.e right linerad then down even with CMA2 \
+          then to CMA2.e
+       line from CMA2.w left even with linerad+arrowht left of TORS.w \
+          then up even with TORS then right linerad
+       arrow from FROM.e right linerad then down 2.45*$h \
+          then to JCLS.w
+       arrow from JCLS.e right even with TORS.e then right 2.2*linerad \
+          then up 1.1*$h
+       arrow up 1.35*$h then right 1.4*linerad
+       line right even with linewid right of TORS.e \
+          then down even with TORS then right linerad
+Fout:  previous.end
+
+       # Linkage from SELECT down into FROM
+       arrow from RC.e right linerad then down even with ALL
+       arrow down even with BACK1 then left even with DSTCT.e
+       arrow left even with X1 then down even with FROM then to FROM.w
+
+BACK2: 1.25*$h below JCLS
+
+       # Build the WHERE clause
+       right
+WHERE: oval "WHERE" fit with .w at (X2,1.25*$h below BACK2)
+       arrow 2*arrowht
+WHEX:  box "expr" fit
+BACK3: 1.25*$h below WHERE
+
+       # Linkage from FROM down to WHERE
+       arrow from TORS.e to linerad east of Fout then down even with CMA2.s
+       arrow down even with BACK2 then to BACK2
+       arrow left even with X1 then down even with WHERE then to WHERE.w
+       arrow from (X1,FROM.n) down even with CMA2.s
+       line down even with WHERE.n
+
+       # Build the GROUP BY clause
+       right
+GROUP: oval "GROUP" fit with .w at (X2,2*$h below BACK3)
+       arrow 2*arrowht
+       oval "BY" fit
+       arrow
+GEX:   box "expr" fit
+       arrow 230%
+HVNG:  oval "HAVING" fit
+       arrow 2*arrowht
+HEX:   box "expr" fit
+GCMA:  oval "," bold fit at 1.25*$h below GEX
+       arrow from GEX.e right linerad then down even with GCMA then to GCMA.e
+       line from GCMA.w left even with linerad+arrowht west of GEX.w \
+          then up even with GEX then right linerad
+       arrow from 2*linerad+arrowht west of HAVING.w then right linerad \
+          then down $h then right even with .5<HAVING,HAVING.e>
+       line right even with linerad east of HEX.e then down even with HEX \
+          then right linerad
+Gout:  previous.end
+BACK4: (BACK2,1.25*$h below GCMA)
+       arrow from (X1,BACK3) then down $h \
+          then right even with BY
+       arrow right even with linerad right of GEX.e \
+          then down even with GEX then right linerad+arrowht
+
+       # Link the WHERE clause down into the GROUP BY clause
+       arrow from WHEX.e right linerad then down even with BACK3 \
+          then left even with WHERE.e
+       arrow left even with X1 then down even with GROUP then to GROUP.w
+       arrow from (X1,WHERE.n) down even with .5<WHERE,arrowht below BACK3>
+       line down even with GROUP.n
+       right
+
+       # build the WINDOW clause
+       oval "WINDOW" fit with .w at (X2,1.25*$h below BACK4)
+       arrow
+WNAM:  oval "window-name" fit
+       arrow 2*arrowht
+       oval "AS" fit
+       arrow same
+WDEF:  box "window-defn" fit
+WCMA:  oval "," bold fit at 1.25*$h below .5<WNAM.w,WDEF.e>
+       arrow from WDEF.e right linerad then down even with WCMA then to WCMA.e
+       line from WCMA.w left even with linerad+arrowht west of WNAM.w \
+           then up even with WNAM then right linerad
+OUT5:  (BACK2,1.25*$h below WCMA)
+
+       # Link GROUP BY down into WINDOW and WINDOW to output
+       arrow from (linerad right of WDEF.e,WCMA.n) \
+          down even with 1.5*arrowht above OUT5
+Wout:  previous.end
+       arrow from HEX.e to linerad east of Gout then down even with GCMA
+       arrow down even with BACK4 then to BACK4
+       arrow left even with X1 then down even with WINDOW then to WINDOW.w
+       arrow from (X1,GROUP.n) down even with GCMA
+       arrow down even with OUT5 then to OUT5
+       arrow right even with WDEF.e; line right linerad then down linerad
+
+       # build the VALUES clause
+       right
+       oval "VALUES" fit with .w at (X1,2.5*$h below OUT5)
+       arrow
+VLP:   oval "(" bold fit
+       arrow
+VEX:   box "expr" fit
+       arrow
+VRP:   oval ")" bold fit
+       arrow right even with linerad west of Wout
+       line right linerad then down linerad
+       # expr loop
+VCMA1: oval "," bold fit at 1.25*$h above VEX
+VCMA2: oval "," bold fit at 1.25*$h below VEX
+       arrow from VEX.e right linerad then up even with VCMA1 then to VCMA1.e
+       line from VCMA1.w left even with linerad+arrowht west of VEX.w \
+          then down even with VEX then right linerad
+       arrow from VRP.e right linerad then down even with VCMA2 then to VCMA2.e
+       line from VCMA2.w left even with linerad+arrowht west of VLP.w \
+          then up even with VLP then right linerad
+
+       # link input down to VALUES
+       arrow from X0.e right linerad then down even with VALUES \
+          then to VALUES.w
+
+
+       # build the compound-operator box
+COP:   box "compound-operator" fit at 1.75*$h below VCMA2
+       arrow from Wout down even with COP then to COP.e
+       arrow from COP.w left even with C0 then up even with ALL
+       line up even with X0 then to X0
+OBACK: 1.25*$h below COP
+
+       # core-select background box
+       $coreLeft = X0.x
+       $coreRight = Gout.x+linerad*2
+       $coreTop = RC.n.y+linerad
+       $coreBtm = VCMA2.s.y-0.5*linerad
+CORE:  box color lightgray fill None thickness 150% behind C0 \
+          width  $coreRight - $coreLeft \
+          height  $coreTop - $coreBtm \
+          with .nw at ($coreLeft,$coreTop)
+       line invis from CORE.e to CORE.ne color gray \
+          "select-core" above italic aligned \
+
+       # Build ORDER BY and LIMIT clauses
+       right
+OB:    oval "ORDER" fit with .w at (WINDOW.w,2.5*$h below COP)
+       arrow right 2*arrowht
+BY:    oval "BY" fit
+LMT:   oval "LIMIT" fit with .w at 3.5*$h below OB.w
+       arrow right 2*arrowht
+LXP:   box "expr" fit
+
+     # Fill out the body of the ORDER BY clause
+     arrow from BY.e right 125%
+OT:  box "ordering-term" fit
+CM2: oval "," bold fit at OT.ht*1.25 below OT
+     arrow from OT.e right linerad then down even with CM2 then to CM2.e
+     line from CM2.w left even with 2*arrowht left of OT.w \
+        then up even with OT then to arrowht left of OT.w
+
+     # Connect the ORDER BY output into the LIMIT input
+     arrow from (Wout,COP.n) down even with OBACK then to OBACK
+     arrow left even with X1 then down even with OB then to OB.w
+     arrow from OT.e right then down OT.ht
+     arrow down even with .5<CM2,LMT> then left even with .5<OB.w,OT.e>
+     arrow left even with X1 then down even with LMT then to LMT.w
+     arrow from (X1,OB.n) down .5*dist(OB,LMT)
+     line down 0.5*dist(OB,LMT)
+
+     # Fill out the body of the LIMIT clause
+OFT: oval "OFFSET" fit with .w at LXP.e + (2*arrowht+linewid,-1.0*LXP.ht)
+     arrow from OFT.e right 2*arrowht
+OEX: box "expr" fit
+LND: arrow right 2*arrowht
+CM3: oval "," bold fit with .w at OFT.ht*1.25 below OFT.w
+     arrow right 2*arrowht
+CEX: box "expr" fit
+     arrow from LXP.e right 2*arrowht
+     arrow right linerad then down even with CM3 then to CM3.w
+     arrow from start of previous right linerad \
+        then down even with OFT then to OFT.w
+
+     # Draw the OFFSET bypass over and then down and then right to
+     # the exit circle
+     arrow from 2*arrowht right of LXP.e right even with LND.end
+     arrow right then down even with OFT.ht below CM3.c then \
+       right even with CTE.e+(linewid,0)
+     circle same
+
+     # Fill out the exits from OFFSET and comma on LIMI
+     line right from LND.end then down linerad
+     arrow from CEX.e right even with LND.end; line right then down linerad
+
+     # Do the complete limit bypass
+     arrow from (X1,LMT.n) down even with last circle \
+       then right even with LND.end
+     line 200%

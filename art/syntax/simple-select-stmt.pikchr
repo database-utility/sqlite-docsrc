@@ -1,0 +1,88 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+
+A0:  circle radius 10%
+
+     # Draw the optional WITH prefix
+     arrow
+WTH: oval "WITH" fit
+RSV: oval "RECURSIVE" fit with .w at WTH.e + (1.25*linewid,-1.0*$h)
+     arrow from WTH.e right even with RSV
+     arrow right even with RSV.e+(2.5*linewid,0)
+CTE: box "common-table-expression" fit
+
+     # Link in the RECURSIVE bubble
+     arrow from WTH.e right linerad then down even with RSV then to RSV.w
+     arrow from RSV.e right 2*arrowht
+     line right linerad then up even with WTH then to arrowht left of CTE.w
+
+     # CTE loop back
+C1:  oval "," bold fit at $h*1.25 below CTE
+     arrow from CTE.e right linerad then down even with C1 then to C1.e
+     line from C1.w right even with 2*arrowht west of CTE.w \
+        then up even with CTE then to arrowht west of CTE.w
+
+     # boxes and ovals to anchor the other major segements of this graph
+SC:  box "select-core" fit with .w at 4*$h below WTH.w
+X1:  linerad right of SC.e
+     right
+OB:  oval "ORDER" fit with .w at linerad+arrowht right of X1
+     arrow right 2*arrowht
+BY:  oval "BY" fit
+LMT: oval "LIMIT" fit with .w at 3.5*$h below OB.w
+     arrow right 2*arrowht
+LXP: box "expr" fit
+
+     # Connect the start circle and the WITH option into select-core
+     arrow from A0.end right linerad then down even with SC then to SC.w
+     arrow from CTE.e right then down 2.5*$h \
+          then left even with .5<RSV.e,CTE.w>
+     line left even with linerad right of A0.end then down linerad
+
+     # Fill out the body of the ORDER BY clause
+     arrow from BY.e right 125%
+OT:  box "ordering-term" fit
+CM2: oval "," bold fit at OT.ht*1.25 below OT
+     arrow from OT.e right linerad then down even with CM2 then to CM2.e
+     line from CM2.w left even with 2*arrowht left of OT.w \
+        then up even with OT then to arrowht left of OT.w
+
+     # Connect the ORDER BY output into the LIMIT input
+     arrow from OT.e right then down OT.ht
+     arrow down even with .5<CM2,LMT> then left even with .5<OB.w,OT.e>
+     arrow left even with X1 \
+       then down even with LMT then to LMT.w
+     arrow from SC.e to OB.w
+     arrow from SC.e right linerad then down .5*dist(OB,LMT)
+     line down 0.5*dist(OB,LMT)
+
+     # Fill out the body of the LIMIT clause
+OFT: oval "OFFSET" fit with .w at LXP.e + (2*arrowht+linewid,-1.0*LXP.ht)
+     arrow from OFT.e right 2*arrowht
+OEX: box "expr" fit
+LND: arrow right 2*arrowht
+CM3: oval "," bold fit with .w at OFT.ht*1.25 below OFT.w
+     arrow right 2*arrowht
+CEX: box "expr" fit
+     arrow from LXP.e right 2*arrowht
+     arrow right linerad then down even with CM3 then to CM3.w
+     arrow from start of previous right linerad \
+        then down even with OFT then to OFT.w
+
+     # Draw the OFFSET bypass over and then down and then right to the exit circle
+     arrow from 2*arrowht right of LXP.e right even with LND.end
+     arrow right then down even with OFT.ht below CM3.c then \
+       right even with CTE.e+(linewid,0)
+     circle same
+
+     # Fill out the exits from OFFSET and comma on LIMIT
+     line right from LND.end then down linerad
+     arrow from CEX.e right even with LND.end; line right then down linerad
+
+     # Do the complete limit bypass
+     arrow from (X1,LMT.n) down even with last circle \
+       then right even with LND.end
+     line to arrowht left of last circle.w

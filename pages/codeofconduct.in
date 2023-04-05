@@ -1,0 +1,21 @@
+<title>Code Of Conduct</title>
+<tcl>hd_keywords {Code of Conduct}</tcl>
+
+<h1>Code of Conduct</h1>
+
+<p>
+Due to concerns raised by readers, this document has been removed.
+The separate [Code of Ethics] document is similar to what this
+document used to be, but with a different name.  The new name is an
+effort to more clearly communicate the purpose and scope of the document.
+
+<p>
+To be clear: 
+The removal of this document does not represent a policy shift.  Rather
+the change is merely an improvement in how the policy is communicated.
+
+<p>
+For historical reference, the complete history for the source code to
+this document is available in the SQLite Documentation source repository:
+<a href="https://www.sqlite.org/docsrc/finfo/pages/codeofconduct.in">
+https://www.sqlite.org/docsrc/finfo/pages/codeofconduct.in</a>

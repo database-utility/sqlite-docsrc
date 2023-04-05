@@ -1,0 +1,24 @@
+     linerad = 10px
+     linewid *= 0.5
+
+     circle radius 10%
+     arrow 2*arrowht
+CN:  oval "column-name" fit
+A1:  arrow 2*arrowht
+     arrow
+TN:  box "type-name" fit
+     arrow 125%
+CC:  box "column-constraint" fit with .w at TN.e+(2*linewid,-CN.ht)
+     arrow from last arrow.end right even with CC.e
+     arrow right even with 1.5*linewid east of CC.e
+     circle same
+
+     # type-name bypass
+     arrow from A1.end right linerad then down 0.85*CN.ht \
+        then right even with TN
+     line right even with linerad east of TN.e then up even with TN \
+        then right linerad
+
+     # column-constraint loop back
+     arrow from (CC.e,TN) right 2*arrowht then down even with CC then to CC.e
+     arrow from CC.w left 2*arrowht then up even with TN then right

@@ -1,0 +1,85 @@
+<title>Query Language Understood by SQLite</title>
+
+<h1 align=center>SQL As Understood By SQLite</h1>
+
+<p>SQLite understands most of the standard SQL
+language.  But it does <a href="omitted.html">omit some features</a>
+while at the same time
+adding a few features of its own.  This document attempts to
+describe precisely what parts of the SQL language SQLite does
+and does not support.  A list of [SQL keywords] is
+also provided.  The SQL language syntax is described by
+[syntax diagrams].
+
+<p>The following syntax documentation topics are available:</p>
+
+<table width="100%" cellpadding="5" border="0">
+<tr><td valign="top"><ul>
+
+<tcl>
+  set i 0
+  set lang_section_list {
+    {{CREATE TABLE} createtable}
+    {{CREATE VIRTUAL TABLE} createvtab}
+    {{CREATE INDEX} createindex}
+    {VACUUM vacuum}
+    {{DROP TABLE} droptable}
+    {{DROP INDEX} dropindex}
+    {INSERT insert}
+    {UPSERT upsert}
+    {REPLACE replace}
+    {DELETE delete}
+    {UPDATE update}
+    {SELECT select}
+    {{RETURNING clause} returning}
+    {{WITH clause} withclause}
+    {comment comment}
+    {EXPLAIN explain}
+    {expression expr}
+    {{BEGIN TRANSACTION} transaction COMMIT}
+    {{COMMIT TRANSACTION} transaction COMMIT}
+    {{END TRANSACTION} transaction COMMIT}
+    {{ROLLBACK TRANSACTION} transaction ROLLBACK}
+    {SAVEPOINT savepoint}
+    {{RELEASE SAVEPOINT} savepoint SAVEPOINT}
+    {PRAGMA pragma.html}
+    {{ON CONFLICT clause} conflict}
+    {{CREATE VIEW} createview}
+    {{DROP VIEW} dropview}
+    {{CREATE TRIGGER} createtrigger}
+    {{DROP TRIGGER} droptrigger}
+    {{ATTACH DATABASE} attach}
+    {{DETACH DATABASE} detach}
+      {REINDEX reindex}
+    {{ALTER TABLE} altertable}
+    {{ANALYZE} analyze}
+    {{INDEXED BY} indexedby}
+    {{aggregate functions} aggfunc aggfunc}
+    {{core functions} corefunc corefunc}
+    {{date and time functions} datefunc datefunc}
+    {keywords keywords {SQL keywords}}
+  }
+  set lx {}
+  foreach {section} [lsort -index 0 -dictionary $lang_section_list] {
+    foreach {s_title s_tag s_kw} $section {}
+    if {$s_kw == ""} {
+      set s_kw $s_title
+    }
+    lappend lx [list $s_kw $s_title 0]
+  }
+  hd_list_of_links {} 340 $lx
+</tcl>
+</ul></td></tr></table>
+
+<p>^The routines [sqlite3_prepare_v2()], [sqlite3_prepare()],
+[sqlite3_prepare16()], [sqlite3_prepare16_v2()],
+[sqlite3_exec()], and [sqlite3_get_table()] accept
+an SQL statement list (sql-stmt-list) which is a semicolon-separated
+list of statements.</p>
+
+<tcl>BubbleDiagram sql-stmt-list</tcl>
+
+<p>Each SQL statement in the statement list is an instance of the
+following:</p>
+
+<tcl>BubbleDiagram sql-stmt</tcl>

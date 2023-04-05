@@ -1,0 +1,178 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+
+     # Draw the optional WITH prefix
+     arrow
+WTH: oval "WITH" fit
+RSV: oval "RECURSIVE" fit with .w at WTH.e + (1.25*linewid,-1.0*WTH.ht)
+     arrow from WTH.e right even with RSV
+     arrow right even with RSV.e+(2.5*linewid,0)
+CTE: box "common-table-expression" fit
+
+     # Link in the RECURSIVE bubble
+     arrow from WTH.e right linerad then down even with RSV then to RSV.w
+     arrow from RSV.e right 2*arrowht
+     line right linerad then up even with WTH then to arrowht left of CTE.w
+
+     # CTE loop back
+C1:  oval "," bold fit at WTH.ht*1.25 below CTE
+     arrow from CTE.e right linerad then down even with C1 then to C1.e
+     line from C1.w right even with 2*arrowht west of CTE.w \
+        then up even with CTE then to arrowht west of CTE.w
+
+     # Arrow from end of CTE half way back toward the left margin
+     arrow from CTE.e right linerad then down 2.2*$h \
+        then left even with .5<C0,CTE.e>
+X1:  previous.end
+
+     arrow from C0.e right linerad then down linewid
+X0:  previous.end
+
+     right
+UPD: oval "UPDATE" fit with .w at 2.75*1.25*$h below WTH.w
+     arrow from X0 down even with UPD then to UPD.w
+     line from X1 left even with X0 then down linerad
+     arrow from UPD.e right linerad then down (4*1.25+.9)*$h \
+       then right linerad+arrowht
+X3:  linerad right of UPD.e    
+OR5: oval "OR" fit
+     arrow 1.5*arrowht
+     oval "ROLLBACK" fit
+     arrow 1.5*arrowht
+X2:  previous.e
+     arrow right linerad then up even with UPD then right linerad+arrowht
+QTN: box "qualified-table-name" fit
+
+     right
+OR4: oval "OR" fit with .w at 1.25*$h above OR5.w
+     arrow 1.5*arrowht
+     oval "REPLACE" fit
+     arrow right even with X2; line right linerad then up linerad
+     arrow from (X3,OR4.n) down even with OR4 then to OR4.w
+
+     right
+OR3: oval "OR" fit with .w at 1.25*$h above OR4.w
+     arrow 1.5*arrowht
+     oval "IGNORE" fit
+     arrow right even with X2; line right linerad then up linerad
+     arrow from (X3,OR3.n) down even with OR3 then to OR3.w
+
+     right
+OR2: oval "OR" fit with .w at 1.25*$h above OR3.w
+     arrow 1.5*arrowht
+     oval "FAIL" fit
+     arrow right even with X2; line right linerad then up linerad
+     arrow from (X3,OR2.n) down even with OR2 then to OR2.w
+
+     right
+OR1: oval "OR" fit with .w at 1.25*$h above OR2.w
+     arrow 1.5*arrowht
+     oval "ABORT" fit
+     arrow right even with X2; line right linerad then up linerad
+     arrow from (X3,OR1.n) down even with OR1 then to OR1.w
+
+     arrow from UPD.e right even with X2; line to arrowht left of QTN.w
+
+     arrow from QTN.e right linerad then down even with 1.25*$h below OR5 \
+         then left even with X0 then down 1.25*$h then right linerad+arrowht
+     oval "SET" fit
+     arrow right linerad*2 then down 1.25*$h then right linerad+arrowht
+CNL: box "column-name-list" fit
+     arrow right linerad then up even with SET then right linerad+arrowht
+EQ:  oval "=" bold fit
+     arrow 2*arrowht
+E1:  box "expr" fit
+     arrow from SET.e right even with CNL.w
+     oval "column-name" fit
+     line to arrowht west of EQ.w
+CMA: oval "," bold fit at 2.5*$h below .5<SET,E1>
+     arrow from E1.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with .5*arrowht right of SET.e \
+        then down even with SET then right linerad*2
+
+Y2:  1.25*$h below CMA
+     arrow from E1.e right linerad then down even with Y2 then to Y2
+     line left even with X0 then down 1.25*$h then right linerad+arrowht
+     oval "FROM" fit
+     arrow 200%
+TOS: box "table-or-subquery" fit
+CX2: oval "," bold fit at 1.25*$h below TOS
+     arrow from TOS.e right linerad then down even with CX2 then to CX2.e
+     line from CX2.w left even with linerad+arrowht west of TOS.w \
+        then up even with TOS then right linerad
+     arrow from FROM.e right linerad then down 2.5*$h \
+        then right even with TOS.w
+JC:  box "join-clause" fit
+     arrow right even with linerad*2 east of TOS.e then up even with TOS \
+        then right linerad+arrowht
+Y3:  (.5<FROM,last arrow.end>,1.25*$h below JC)
+     arrow right linerad then down even with Y3 then to Y3
+     line from TOS.e to arrowht left of 2nd last arrow.end
+
+     arrow from Y3 left even with X0 then down 1.25*$h then right linerad+arrowht
+WHR: oval "WHERE" fit
+     arrow 2*arrowht
+E2:  box "expr" fit
+     arrow right 150%
+RC:  box "returning-clause" fit
+     arrow from (X0,FROM.n) down even with JC.n
+     line to (X0,WHERE.n)
+
+YW:  1.25*$h below WHERE
+X9:  linerad*2 right of CTE.e
+
+     arrow from E2.e right linerad*1.25 then down even with YW \
+        then left even with 0.5<WHR.w,E2.e>
+     line left even with X0 then down linerad*2
+     arrow from RC.e right linerad*1.25 then down even with YW \
+        then left even with RC
+     line left even with E2
+     arrow from (X0,WHERE.n) down even with arrowht below WHERE.s
+     line down even with 1.25*$h below YW then right linerad+arrowht
+ORD: oval "ORDER" fit
+     arrow 2*arrowht
+BY:  oval "BY" fit
+     arrow
+OT:  box "ordering-term" fit
+C4:  oval "," bold fit at 1.25*$h below OT
+
+Y4:  1.0*$h below C4
+LMT: oval "LIMIT" fit with .w at (WTH.w,1.25*$h below Y4)
+     arrow right 2*arrowht
+LEX: box "expr" fit
+     arrow right linerad then down $h then right 2*arrowht
+OST: oval "OFFSET" fit
+     arrow 2*arrowht
+OEX: box "expr" fit
+C5:  oval "," bold fit with .w at 1.25*$h below OST.w; right
+     arrow 2*arrowht
+CEX: box "expr" fit
+     arrow from LEX.e right linerad then down even with C5 then to C5.w
+OUT: 1.25*$h below CEX
+
+     # ordering-term loop on ORDER BY
+     arrow from OT.e right linerad then down even with C4 then to C4.e
+     line from C4.w left even with 2*arrowht left of OT.w then up even with OT \
+       then right linerad
+
+     # LIMIT inputs
+     arrow from (X0,ORD.n) down even with LMT then to LMT.w
+     arrow from OT.e right linerad then down even with Y4 then left even with BY
+     line left even with X0 then down linerad
+
+     # LIMIT bypass to output circle
+     arrow from (X0,LMT.n) down even with OUT then right even with E2
+     arrow right even with X9
+     circle same
+
+     # Output links for OFFSET expressions
+     arrow from OEX.e right 2*arrowht
+X8:  previous.end
+     arrow right linerad then down even with OUT then right
+     arrow from CEX.e right even with X8; line right linerad then down linerad
+     arrow from LEX.e right even with X8; line right linerad \
+         then down even with OST.s

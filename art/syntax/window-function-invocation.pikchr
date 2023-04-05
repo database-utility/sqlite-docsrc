@@ -1,0 +1,42 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     oval "window-func" fit
+     arrow 1.5*arrowht
+LP:  oval "(" bold fit
+     arrow 150%
+E1:  box "expr" fit
+     arrow 150%
+RP:  oval ")" bold fit
+     arrow right linerad then down $h then right linerad+arrowht
+     box "filter-clause" fit
+     arrow right linerad then up even with RP then right linerad+arrowht
+     oval "OVER" fit
+     arrow right linerad then down 1.25*$h then right linerad+arrowht
+WN:  oval "window-name" fit
+     arrow right linerad then up even with RP then right
+     circle same
+
+     line from RP.e to arrowht left of OVER.w
+
+     arrow from OVER.e right even with WN.w
+     box "window-defn" fit
+     line to arrowht west of last circle.w
+
+C1:  oval "," bold fit at 1.25*$h above E1
+     arrow from E1.e right linerad then up even with C1 then to C1.e
+     line from C1.w left even with linerad+arrowht west of E1.w \
+        then down even with E1 then right linerad
+
+     arrow from LP.e right linerad then down $h then right even with E1
+     line right even with linerad+arrowht left of RP.w \
+         then up even with RP then right linerad
+
+STR: oval "*" bold fit at 2.0*$h below E1
+     arrow from LP.e right linerad then down even with STR then to STR.w
+     line from STR.e right even with linerad+arrowht left of RP.w \
+          then up even with RP then right linerad

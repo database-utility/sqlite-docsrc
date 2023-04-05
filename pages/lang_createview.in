@@ -1,0 +1,58 @@
+<title>CREATE VIEW</title>
+<tcl>
+hd_keywords *createview {CREATE VIEW} view VIEW *views
+</tcl>
+
+<fancy_format>
+<h1>Syntax</h1>
+
+<tcl>
+RecursiveBubbleDiagram create-view-stmt
+</tcl>
+
+<h1>Description</h1>
+
+<p>^The CREATE VIEW command assigns a name to a pre-packaged 
+[SELECT] statement. 
+^Once the view is created, it can be used in the FROM clause
+of another [SELECT] in place of a table name.
+</p>
+
+<p>^If the "TEMP" or "TEMPORARY" keyword occurs in between "CREATE"
+and "VIEW" then the view that is created is only visible to the
+[database connection] that created it and is automatically deleted when
+the database connection is closed.</p>
+
+<p> ^If a <yyterm>schema-name</yyterm> is specified, then the view 
+is created in the specified database.
+^It is an error to specify both a <yyterm>schema-name</yyterm>
+and the TEMP keyword on a VIEW, unless the <yyterm>schema-name</yyterm> 
+is "temp".
+^If no schema name is specified, and the TEMP keyword is not present,
+the VIEW is created in the main database.</p>
+
+<p>^You cannot [DELETE], [INSERT], or [UPDATE] a view.  ^Views are read-only 
+in SQLite.  ^However, in many cases you can use an
+[INSTEAD OF trigger] on the view to accomplish 
+the same thing.  ^Views are removed 
+with the [DROP VIEW] command.</p>
+
+<p>^If a <yyterm>column-name</yyterm> list follows 
+the <yyterm>view-name</yyterm>, then that list determines
+the names of the columns for the view.  ^If the <yyterm>column-name</yyterm>
+list is omitted, then the names of the columns in the view are derived
+from the names of the result-set columns in the [select-stmt].
+The use of <yyterm>column-name</yyterm> list is recommended.  Or, if
+<yyterm>column-name</yyterm> list is omitted, then the result
+columns in the [SELECT] statement that defines the view should have
+well-defined names using the 
+"[result-column|AS column-alias]" syntax.
+SQLite allows you to create views that depend on automatically 
+generated column names, but you should avoid using them since the 
+rules used to generate column names are not a defined part of the
+interface and might change in future releases of SQLite.
+
+<p>The <yyterm>column-name</yyterm> list syntax was added in
+SQLite versions 3.9.0 ([dateof:3.9.0]).
+
+<tcl>

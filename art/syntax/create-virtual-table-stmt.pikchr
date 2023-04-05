@@ -1,0 +1,66 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+CR:  oval "CREATE" fit
+     arrow 2*arrowht
+     oval "VIRTUAL" fit
+     arrow 2*arrowht
+TBL: oval "TABLE" fit
+     arrow
+     oval "IF" fit
+     arrow right 2*arrowht
+     oval "NOT" fit
+     arrow 2*arrowht
+ETS: oval "EXISTS" fit
+
+     # Second line:  schema-name . table-name
+Y1:  1*$h below TBL.s  # vertical position of back-arrow
+SN:  oval "schema-name" fit with .w at (CR.w,1*$h below Y1)
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+VTN: oval "table-name" fit
+
+     # Third line: USING module-name ...
+Y2:  2.0*$h below SN   # vertical posistion of back-arrow
+USG: oval "USING" fit with .w at (CR.w,1.7*$h below Y2)
+     arrow right 2*arrowht
+MN:  oval "module-name" fit     
+     arrow
+LP:  oval "(" bold fit
+     arrow
+MA:  oval "module-argument" fit
+     arrow
+RP:  oval ")" bold fit
+     arrow
+     circle same
+
+     # Loop over the module-argment
+CMA: oval "," bold fit at 1.25*$h below MA
+     arrow from MA.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht left of MA.w \
+        then up even with MA then right linerad
+
+     # module-argment bypass
+     arrow from MN.e right linerad then up .8*$h then right even with MA
+     line right even with 2*arrowht west of last circle.w \
+         then down even with last circle then right linerad
+
+     # link table-name to USING
+     arrow from VTN.e right linerad then down even with Y2 then left even with MN
+     arrow left even with first circle then down even with USG then to USG.w
+
+     # Connect TABLE and EXISTS back to schema-name
+     arrow from ETS.e right linerad then down even with Y1 then left 4*linewid
+     arrow left even with first circle then down even with SN then to SN.w
+     arrow from TBL.e right linerad then down 2*linerad
+     line down even with Y1 then left linerad
+
+     # schema-name bypass
+     arrow from (first circle, SN.n) down even with $h below SN \
+        then right even with SN
+     line right even with 2*arrowht left of VTN.w then up even with VTN \
+        then to arrowht left of VTN.w

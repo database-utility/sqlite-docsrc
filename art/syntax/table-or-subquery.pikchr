@@ -1,0 +1,109 @@
+      linerad = 10px
+      linewid *= 0.5 
+      $h = 0.21
+      # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:   circle radius 10%
+X1:   linerad right of C0.e
+      arrow right linerad then down 1.25*$h then right linerad+arrowht
+SN:   oval "schema-name" fit
+      arrow 1.5*arrowht
+DOT:  oval "." bold fit
+      arrow right linerad then up even with C0 then right linerad+arrowht
+TN:   oval "table-name" fit
+      arrow
+AS1:  oval "AS" fit
+      arrow
+TA:   oval "table-alias" fit
+
+      line from C0.e to arrowht west of TN.w
+A2:   arrow from TN.e right linerad then up 1*$h then right
+      line right even with linerad right of AS1.e \
+         then down even with AS1 then right linerad
+      line from A2.end right even with linerad right of TA.e \
+         then down even with TA then right linerad
+
+IDX1: oval "INDEXED" fit with .w at 2.5*$h below .8<TN.w,TN>
+      arrow 2*arrowht
+      oval "BY" fit
+      arrow 2*arrowht
+IN:   oval "index-name" fit
+NOT1: oval "NOT" fit with .w at 1.25*$h below INDEXED.w
+      arrow 2*arrowht
+NIDX: oval "INDEXED" fit
+      arrow from TA.e right linerad*3 then down 1.25*$h \
+         then left even with TA
+      arrow left even with linerad+arrowht left of NOT1.w \
+         then down even with NOT1 then to NOT1.w
+      arrow from (linerad+arrowht left of IDX1.w,IDX1.n) down even with IDX1 \
+         then to IDX1.w
+
+      arrow from C0.e right linerad then down even with 2.1*$h below NOT1 \
+         then right even with TN.w
+TFN:  oval "table-function-name" fit
+      arrow 1.5*arrowht
+LP2:  oval "(" bold fit
+      arrow
+E2:   box "expr" fit
+      arrow
+RP2:  oval ")" bold fit
+X9:   linerad right of previous.e
+      arrow right 2*linerad then up linerad+arrowht
+CMA1: oval "," bold fit at 1.25*$h above E2
+      arrow from E2.e right linerad then up even with CMA1 then to CMA1.e
+      line from CMA1.w left even with linerad+arrowht west of E2.w \
+         then down even with E2 then right linerad
+      line from DOT.e right linerad then down even with TFN then right linerad
+      right
+
+      arrow from IN.e right even with X9; line right linerad then up linerad
+      arrow from NIDX.e right even with X9; line right linerad then up linerad
+      right
+
+      line from TA.e right even with 2*linerad right of X9
+
+AS2:  oval "AS" fit with .w at 2.5*$h below .7<TFN.w,TFN.e>
+      arrow 200%
+TA2:  oval "table-alias" fit
+      arrow right even with X9; line right linerad then up linerad
+      right
+
+      arrow from RP2.e right linerad then down 1.25*$h \
+         then left even with TA2
+X2:   previous.end
+      arrow left even with linewid*1.5 left of AS2 then down even with AS2 \
+         then to AS2.w
+      line from (linerad+arrowht left of TA2.w,X2) left linerad \
+         then down even with TA2 then right linerad
+      
+
+      arrow from (X1,TFN.n) down even with 1.25*$h below TA2 \
+         then right linerad+arrowht
+      oval "(" bold fit
+      arrow 2*arrowht
+SS:   box "select-stmt" fit
+      arrow 2*arrowht
+RP2:  oval ")" bold fit
+      arrow right linerad then up even with AS2 then to AS2.w
+      arrow from RP2.e right even with X9
+      line right linerad then up linerad
+      line from (linerad right of AS2,RP2) right linerad then up even with AS2 \
+         then right linerad
+
+      arrow from (X1,SS.n) then down even with 1.25*$h below SS \
+         then right linerad+arrowht
+LP3:  oval "(" bold fit
+      arrow 150%
+TOS:  box "table-or-subquery" fit
+      arrow 150%
+RP3:  oval ")" bold fit
+      arrow right even with X9; arrow right linerad then up even with TN \
+         then right linewid; circle same
+CMA2: oval "," bold fit at 1.25*$h below TOS
+      arrow from TOS.e right linerad then down even with CMA2 then to CMA2.e
+      line from CMA2.w left even with linerad+arrowht west of TOS.w \
+         then up even with TOS then right linerad
+      arrow from LP3.e right linerad then down 2.5*$h then right linerad+arrowht
+      box "join-clause" fit
+      line right even with linerad+arrowht left of RP3.w then up even with RP3 \
+        then right linerad

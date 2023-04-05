@@ -1,0 +1,73 @@
+<title>LoC Recommended Storage Format</title>
+<tcl>hd_keywords {recommended storage format} \
+   {recommended by the US Library of Congress}</tcl>
+
+<fancy_format>
+
+<h1>Overview</h1>
+
+<table align="right" border="0">
+<tr><td>
+<a href="https://www.loc.gov">
+<img src="images/loc.jpg" width="200" height="182"></a>
+</table>
+
+<p>
+SQLite is a
+[https://www.loc.gov/preservation/resources/rfs/|Recommended Storage Format]
+for datasets according to the
+[https://www.loc.gov/|US Library of Congress].
+Further information:
+
+<p>
+<ul>
+<li>
+[https://www.loc.gov/preservation/digital/formats/fdd/fdd000461.shtml#local]
+<li>
+[https://www.loc.gov/preservation/resources/rfs/data.html]
+</ul>
+
+<p>
+As of this writing (2018-05-29) the only other recommended storage formats
+for datasets are XML, JSON, and CSV.
+
+<h2>What Is A Recommended Storage Format?</h2>
+
+<p>
+Recommended storage formats are formats which, in the opinion of the
+preservationists at the Library of Congress, maximizes the chance of
+survival and continued accessibility of digital content.
+When selecting recommended storage formats, the following criteria are
+considered (quoting from the LOC website):
+
+<ol>
+<li><p><b>Disclosure.</b>
+Degree to which complete specifications and tools for validating 
+technical integrity exist and are accessible to those creating and
+sustaining digital content.
+A spectrum of disclosure levels can be observed for digital formats.
+What is most significant is not approval by a recognized standards body,
+but the existence of complete documentation.
+<li><P><b>Adoption.</b>
+Degree to which the format is already used by the primary creators,
+disseminators, or users of information resources. 
+This includes use as a master format, for delivery to end users, 
+and as a means of interchange between systems.
+<li><p><b>Transparency.</b>
+Degree to which the digital representation is open to direct analysis 
+with basic tools, such as human readability using a text-only editor.
+<li><p><b>Self-documentation.</b>
+Self-documenting digital objects contain basic descriptive, 
+technical, and other administrative metadata.
+<li><p><b>External Dependencies.</b>
+Degree to which a particular format depends on particular hardware,
+operating system, or software for rendering or use and the predicted
+complexity of dealing with those dependencies in future technical 
+environments.
+<li><p><b>Impact of Patents.</b>
+Degree to which the ability of archival institutions to sustain content 
+in a format will be inhibited by patents.
+<li><p><b>Technical Protection Mechanisms.</b>
+Implementation of mechanisms such as encryption that prevent the 
+preservation of content by a trusted repository. 
+</ol>

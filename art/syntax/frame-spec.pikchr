@@ -1,0 +1,155 @@
+       linerad = 10px
+       linewid *= 0.5
+       $h = 0.21
+ 
+C0:    circle radius 10%
+YBACK: 9.5*$h below C0
+
+       # Construct the path for the top row
+       arrow from C0.e right linerad then down 2.5*$h \
+         then right linerad+arrowht
+       oval "GROUPS" fit
+#       arrow 1.5*arrowht
+XRNG:  previous.end  # right-most edge of the RANGE stack
+       line right linerad then up even with C0 then right linerad
+       arrow right 2*linerad+arrowht
+BTWN:  oval "BETWEEN" fit
+       arrow right 2*linerad+arrowht
+UNB1:  oval "UNBOUNDED" fit
+       arrow right 1.5*arrowht
+       oval "PRECEDING" fit
+XS2:   previous.e    # right-most edge of the first BETWEEN stack
+       arrow 2*linerad+arrowht
+AND:   oval "AND" fit
+       arrow from AND.e right linerad then down 3*1.25*$h \
+           then right linerad+arrowht
+       oval "UNBOUNDED" fit
+       arrow 1.5*arrowht
+       oval "FOLLOWING" fit
+#       arrow 1.5*arrowht
+XEND:  previous.end
+       # XEND is now the right-most extent of arrow on the first row
+       line right linerad then down linerad
+
+       # Fill in the RANGE stack
+       arrow from C0.e right 2*linerad+arrowht
+       oval "RANGE" fit
+       arrow 1.5*arrowht
+       line linerad
+       arrow from C0.e right linerad then down 1.25*$h \
+         then right linerad+arrowht
+       oval "ROWS" fit
+       arrow right even with XRNG
+       line right linerad then up linerad
+
+       # Fill in the stack below BETWEEN
+       right
+       arrow from 2*linerad+arrowht west of BTWN.w right linerad \
+         then down 4*1.25*$h then right linerad+arrowht
+B1:    linerad+arrowht west of BTWN.w
+BUNB:  oval "UNBOUNDED" fit
+       arrow 2*arrowht
+       oval "PRECEDING" fit
+       arrow right even with XEND; line right linerad then down linerad
+       right
+BE1:   box "expr" fit with .w at 1.25*$h below BUNB.w
+       arrow 2*arrowht
+       oval "PRECEDING" fit
+       arrow right even with XEND; line right linerad then down linerad
+       arrow from (B1,BUNB.n) down even with BE1 then to BE1.w
+       right
+BCUR:  oval "CURRENT" fit with .w at 1.25*$h below BE1.w
+       arrow 2*arrowht
+       oval "ROW" fit
+       arrow right even with XEND; line right linerad then down linerad
+       arrow from (B1,BE1.n) down even with BCUR then to BCUR.w
+
+       # Fill in the stack that comes after BETWEEN, below UNBOUNDED PRECEDING
+       right
+S1E1:  box "expr" fit with .w at 1.25*$h below UNB1.w
+       arrow 2*arrowht
+       oval "PRECEDING" fit
+       arrow right even with XS2; line right linerad then up linerad
+       arrow from 2*linerad+arrowht west of UNB1.w right linerad \
+         then down even with S1E1 then to S1E1.w
+S1X1:  linerad+arrowht west of UNB1.w
+       right
+S1CR:  oval "CURRENT" fit with .w at 1.25*$h below S1E1.w
+       arrow 2*arrowht
+       oval "ROW" fit
+       arrow right even with XS2; line right linerad then up linerad
+       arrow from (S1X1,S1E1.n) down even with S1CR then to S1CR.w
+       right
+S1E2:  box "expr" fit with .w at 1.25*$h below S1CR.w
+       arrow 2*arrowht
+       oval "FOLLOWING" fit
+       arrow right even with XS2
+       line right linerad then up even with C0 then right linerad
+       arrow from (S1X1,S1CR.n) down even with S1E2 then to S1E2.w
+ 
+       # Fill in the stack that comes after the AND, below expr PRECEDING
+       arrow from AND.e right linerad*2+arrowht
+S2E1:  box "expr" fit
+       arrow 2*arrowht
+       oval "PRECEDING" fit
+       arrow right even with XEND
+LINE1: line right linerad then down even with YBACK then left
+       right
+S2CR:  oval "CURRENT" fit with .w at 1.25*$h below S2E1.w
+       arrow 2*arrowht
+       oval "ROW" fit
+       arrow right even with XEND; line right linerad then down linerad
+       arrow from AND.e right linerad then down even with S2CR then to S2CR.w
+       right
+S2E2:  box "expr" fit with .w at 1.25*$h below S2CR.w
+       arrow 2*arrowht
+       oval "FOLLOWING" fit
+       arrow right even with XEND; line right linerad then down linerad
+       arrow from (linerad east of AND.e,S2CR.n) down even with S2E2 \
+          then to S2E2.w
+
+       # Build the EXCLUDE stack.  Start with the longest line, which is
+       # the second line
+       right
+EX2:   oval "EXCLUDE" fit with .w at (4in left of XEND,3*$h below YBACK)
+       arrow 2*arrowht
+       oval "CURRENT" fit
+       arrow 2*arrowht
+       oval "ROW" fit
+       arrow 2*arrowht
+EXEND: previous.end
+       line right linerad then down linerad
+       right
+EX3:   oval "EXCLUDE" fit with .w at 1.25*$h below EX2.w
+       arrow 2*arrowht
+       oval "GROUP" fit
+       arrow right even with EXEND; line right linerad then down linerad
+       right
+EX4:   oval "EXCLUDE" fit with .w at 1.25*$h below EX3.w
+       arrow 2*arrowht
+       oval "TIES" fit
+       arrow right even with EXEND; line right linerad then down linerad
+YOUT:  1.5*$h below EX4
+       right
+EX1:   oval "EXCLUDE" fit with .w at 1.25*$h above EX2.w
+       arrow 2*arrowht
+       oval "NO" fit
+       arrow 2*arrowht
+       oval "OTHERS" fit
+       arrow right even with EXEND
+       arrow right linerad then down even with YOUT then right 300%
+       circle same
+
+       # EXCLUDE bypass
+EXX0:  linerad+arrowht left of EX2.w
+       arrow from LINE1.end to (.5*(LINE1.end.x+EXX0.x),LINE1.end.y)
+       arrow from previous.end left even with EXX0 \
+         then down even with YOUT \
+         then right 300%
+       line from previous.end right even with 2*linerad east of EXEND
+
+       # Inputs to EXCLUDES
+       arrow from (EXX0,EX1.n) down even with EX1 then to EX1.w
+       arrow from (EXX0,EX2.n) down even with EX2 then to EX2.w
+       arrow from (EXX0,EX3.n) down even with EX3 then to EX3.w
+       arrow from (EXX0,EX4.n) down even with EX4 then to EX4.w

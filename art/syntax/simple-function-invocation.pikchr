@@ -1,0 +1,29 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow 2*arrowht
+     oval "simple-func" fit
+     arrow 2*arrowht
+LP:  oval "(" bold fit
+     arrow 150%
+EXP: box "expr" fit
+     arrow 150%
+RP:  oval ")" bold fit
+     arrow 2*arrowht
+     circle same
+
+CMA: oval "," bold fit at 1.25*$h above EXP
+     arrow from EXP.e right linerad then up even with CMA then to CMA.e
+     line from CMA.w left even with linerad+arrowht west of EXP.w \
+         then down even with EXP then right linerad
+
+     arrow from LP.e right linerad then down .9*$h then right even with EXP
+X2:  linerad+arrowht left of RP.w
+     line right even with X2 then down even with X2 then right linerad
+
+STR: oval "*" bold fit at 1.8*$h below EXP
+     arrow from LP.e right linerad then down even with STR then to STR.w
+     line from STR.e right even with X2 then up even with EXP.s

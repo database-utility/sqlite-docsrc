@@ -1,0 +1,19 @@
+     linerad = 10px
+     linewid *= 0.5 
+     $h = 0.21
+     # debug_label_color=red; color=lightgray; margin=1cm
+
+C0:  circle radius 10%
+     arrow right linerad then down .9*$h then right linerad+arrowht
+PLS: oval "+" bold fit
+     arrow right linerad then up even with C0 then right linerad+arrowht
+NL:  oval "numeric-literal" fit
+     arrow 2*arrowht
+     circle same
+
+     arrow from C0.e right linerad then down (.9+1.25)*$h \
+       then right linerad+arrowht
+MN:   oval "-" bold fit
+     line right linerad then up even with PLS.n
+     arrow from C0.e right even with PLS
+     line to arrowht left of NL.w

@@ -1,0 +1,25 @@
+    linerad = 10px
+    linewid *= 0.5 
+    $h = 0.21
+
+C0: circle radius 10%
+    arrow 2*arrowht
+T1: box "table-or-subquery" fit
+    arrow right linerad then down $h then right linewid+linerad
+OP: box "join-operator" fit
+    arrow 2*arrowht
+T2: box "table-or-subquery" fit
+    arrow 2*arrowht
+JC: box "join-constraint" fit
+    arrow right linewid then up even with C0 then right linerad+arrowht
+    circle same
+
+    # bypass
+    arrow from T1.e right even with T2
+    line to arrowht west of last circle
+
+    # Loop
+    arrow from JC.e right linerad then down even with $h below JC \
+       then left even with T2
+    line left even with linerad+arrowht west of OP.w \
+       then up even with OP then to OP.w

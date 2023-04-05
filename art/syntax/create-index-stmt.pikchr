@@ -1,0 +1,69 @@
+     linerad = 10px
+     linewid *= 0.5
+     $h = 0.21
+
+     circle radius 10%
+A0:  arrow 2*arrowht
+CR:  oval "CREATE" fit
+UQ:  oval "UNIQUE" fit with .w at (linewid right of CR.e,.8*$h below CR)
+IX:  oval "INDEX" fit with .w at (linewid right of UQ.e,CR)
+     arrow from CR.e right even with UQ; arrow to IX.w
+     arrow from CR.e right linerad then down even with UQ then to UQ.w
+     line from UQ.e right linerad then up even with IX then to arrowht left of IX.w
+     arrow from IX.e right
+     oval "IF" fit
+     arrow right 2*arrowht
+     oval "NOT" fit
+     arrow 2*arrowht
+ETS: oval "EXISTS" fit
+
+     # IF NOT EXISTS bypass
+Y1:  .5*$h below UQ.s  # vertical position of back-arrow
+     arrow from IX.e right linerad then down even with Y1  then left even with UQ
+     arrow from ETS.e right then down even with Y1 then left even with ETS.w
+     line left even with IX.w
+
+     # second row
+     arrow left even with first circle then down $h*1.25 then right 2*arrowht
+SN:  oval "schema-name" fit
+     arrow 2*arrowht
+DOT: oval "." bold fit
+     arrow
+     oval "index-name" fit
+     arrow 2*arrowht
+     oval "ON" fit
+     arrow 2*arrowht
+     oval "table-name" fit
+     arrow 2*arrowht
+LP:  oval "(" bold fit
+     arrow
+IXC: box "indexed-column" fit
+     arrow
+RP:  oval ")" bold fit         
+
+     # Loop over indexed-column
+CMA: oval "," bold fit at $h*1.25 below IXC
+     arrow from IXC.e right linerad then down even with CMA then to CMA.e
+     line from CMA.w left even with 2*arrowht left of IXC.w \
+       then up even with IXC then right linerad
+
+     # schema-name bypass
+     arrow from (first circle,SN.n) down even with $h below SN \
+       then right even with SN
+     line right even with arrowht right of DOT.e then up even with DOT \
+        then right linerad
+
+     # WHERE clause and end circle
+WH:  oval "WHERE" fit with .w at IXC.w+(linewid,-$h*3.5)
+     arrow right 2*arrowht
+WEX: box "expr" fit
+     arrow right even with linewid*1.5 right of RP.e
+     circle same
+
+     # Linkage from the last ")" to the WHERE clause or or circle
+     arrow from RP.e right linerad then down even with CMA
+J1:  previous.end
+     line down even with last circle then to arrowht left of last circle.w
+     arrow from J1 down even with $h below CMA then left even with CMA
+     arrow left even with 2*arrowht left of WH.w then down even with WH \
+       then to WH.w
